@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAK-IT PACIL — Rak Sekretariat Fasilkom UI</title>
+    
+    <!-- Google Fonts: Fredoka (Logo only), Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                        logo: ['Fredoka', 'sans-serif'],
+                    },
+                    colors: {
+                        paper: {
+                            bg: '#F8FAFC',
+                            card: '#FFFFFF',
+                            grid: '#E2E8F0',
+                            ink: '#0F172A',
+                            muted: '#475569'
+                        },
+                        pacil: {
+                            blue: '#1D4ED8',
+                            red: '#EA580C',
+                            mint: '#10B981',
+                        },
+                        wood: {
+                            light: '#D99B66',
+                            base: '#B8743E',
+                            dark: '#8C5225',
+                            inner: '#6E3F1B'
+                        },
+                        manila: {
+                            light: '#F3D2AE',
+                            base: '#E2AC76',
+                            dark: '#C98E55',
+                            border: '#4A2E16'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Crisp Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #F8FAFC; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 999px; border: 2px solid #F8FAFC; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* Crisp Fasilkom Blue & Mint Cartoon Grid Notebook Background */
+        body.notebook-bg {
+            background-color: #F8FAFC;
+            background-image:
+                linear-gradient(to right, #E2E8F0 1.5px, transparent 1.5px),
+                linear-gradient(to bottom, #E2E8F0 1.5px, transparent 1.5px);
+            background-size: 28px 28px;
+        }
+
+        /* Cozy Cartoon Paper Card */
+        .paper-card {
+            background: #FFFFFF;
+            border: 2.5px solid #0F172A;
+            border-radius: 1.25rem;
+            box-shadow: 0 5px 0 #0F172A;
+        }
+
+        /* Bouncy Cartoon Button */
+        .tactile-btn {
+            border: 2.5px solid #0F172A;
+            border-radius: 0.95rem;
+            box-shadow: 0 4px 0 #0F172A;
+            transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease, background-color 0.15s ease;
+        }
+        .tactile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #0F172A;
+        }
+        .tactile-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #0F172A;
+        }
+
+        /* Cartoon Wooden Bookshelf Cabinet (Matching Panda Mascot's Shelf) */
+        .cabinet-shell {
+            background: linear-gradient(180deg, #D99B66 0%, #C4814B 100%);
+            border: 3px solid #0F172A;
+            border-radius: 1.65rem;
+            box-shadow: 0 8px 0 #0F172A;
+        }
+
+        /* Individual Cartoon Cubby Compartment */
+        .cubby-slot {
+            background: linear-gradient(180deg, #75421D 0%, #8E5327 32%, #A66534 100%);
+            border: 2.5px solid #0F172A;
+            border-radius: 1rem;
+            box-shadow: inset 0 7px 0 rgba(15, 23, 42, 0.35), 0 3px 0 rgba(15, 23, 42, 0.25);
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+        .cubby-slot:hover {
+            background: linear-gradient(180deg, #8A5025 0%, #A86432 32%, #BF7640 100%);
+            border-color: #38BDF8;
+            box-shadow: inset 0 5px 0 rgba(15, 23, 42, 0.25), 0 0 0 3px #38BDF8, 0 6px 0 #0F172A;
+            transform: translateY(-3px) scale(1.015);
+        }
+
+        /* Search Highlight Pulse */
+        @keyframes cubby-found {
+            0%, 100% {
+                box-shadow: inset 0 4px 0 rgba(15, 23, 42, 0.2), 0 0 0 4px #FACC15, 0 5px 0 #0F172A;
+                transform: scale(1.01);
+            }
+            50% {
+                box-shadow: inset 0 4px 0 rgba(15, 23, 42, 0.2), 0 0 0 4px #38BDF8, 0 7px 0 #0F172A;
+                transform: scale(1.025);
+            }
+        }
+        .cubby-match-highlight {
+            animation: cubby-found 1.3s infinite ease-in-out;
+        }
+
+        /* Cartoon Manila Envelope Card */
+        .manila-card {
+            background: linear-gradient(180deg, #F3D2AE 0%, #E2AC76 100%);
+            border: 2.5px solid #0F172A;
+            border-radius: 1rem;
+            box-shadow: 0 4px 0 #0F172A;
+            transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.14s ease, background 0.14s ease;
+        }
+        .manila-card:hover {
+            background: linear-gradient(180deg, #F7DCBE 0%, #E9B684 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #0F172A;
+        }
+
+        /* Cartoon Masking Tape Sticker */
+        .tape-strip {
+            background: #DBEAFE;
+            border: 2px solid #0F172A;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 0 #0F172A;
+        }
+
+        /* Panda Mascot Logo Animations */
+        @keyframes panda-bob {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-3.5px) rotate(-1deg); }
+        }
+        @keyframes shelf-hug-wiggle {
+            0%, 100% { transform: rotate(-5deg) translateY(0px); }
+            50% { transform: rotate(-2deg) translateY(-2px); }
+        }
+        @keyframes ear-wiggle-left {
+            0%, 82%, 100% { transform: rotate(0deg); }
+            88% { transform: rotate(-10deg); }
+            94% { transform: rotate(5deg); }
+        }
+        @keyframes ear-wiggle-right {
+            0%, 82%, 100% { transform: rotate(0deg); }
+            88% { transform: rotate(10deg); }
+            94% { transform: rotate(-5deg); }
+        }
+
+        #welcome-splash-modal {
+            opacity: 0;
+            transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.75s ease;
+        }
+        #welcome-splash-modal.splash-visible { opacity: 1; }
+        #welcome-splash-modal.splash-fading-out { opacity: 0; pointer-events: none; }
+
+        .anim-panda-bob { transform-origin: 180px 260px; animation: panda-bob 2.2s infinite ease-in-out; }
+        .anim-shelf-wiggle { transform-origin: 192px 265px; animation: shelf-hug-wiggle 2.2s infinite ease-in-out; }
+        .anim-ear-left { transform-origin: 126px 128px; animation: ear-wiggle-left 3.4s infinite ease-in-out; }
+        .anim-ear-right { transform-origin: 234px 128px; animation: ear-wiggle-right 3.4s infinite ease-in-out; }
+
+        .logo-text-rakit {
+            color: #A5331E;
+            -webkit-text-stroke: 1.25px #1C1917;
+            paint-order: stroke fill;
+        }
+        .logo-text-pacil {
+            color: #2E2B85;
+            -webkit-text-stroke: 1.25px #1C1917;
+            paint-order: stroke fill;
+        }
+    </style>
+</head>
+<body class="notebook-bg text-slate-900 font-sans antialiased min-h-screen flex flex-col selection:bg-[#1D4ED8] selection:text-white">
+
+    <!-- ===================================================================== -->
+    <!-- WELCOME SPLASH OVERLAY (HORIZONTAL PANDA + RAK-IT! PACIL, FADING)     -->
+    <!-- ===================================================================== -->
+    <div id="welcome-splash-modal" onclick="fadeOutWelcomeSplash()" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-[#F8FAFC]/95 backdrop-blur-xs cursor-pointer select-none">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 max-w-2xl w-full">
+            <!-- Left: Exact Panda Hugging Bookshelf Character (No Circle Frame) -->
+            <div class="w-44 h-44 sm:w-52 sm:h-52 shrink-0 flex items-center justify-center">
+                <svg viewBox="82 96 196 226" class="w-full h-full overflow-visible" aria-label="Maskot Panda Rak-it! Pacil">
+                    <g class="anim-panda-bob">
+                        <!-- Torso -->
+                        <ellipse cx="180" cy="252" rx="64" ry="56" fill="#FAF8F5" stroke="#1E242B" stroke-width="6"/>
+                        <!-- Black Shoulder & Chest Band -->
+                        <path d="M 122 226 C 138 206, 222 206, 238 226 C 245 245, 240 268, 226 278 C 198 265, 162 265, 134 278 C 120 268, 115 245, 122 226 Z" fill="#2A2D34" stroke="#1E242B" stroke-width="6" stroke-linejoin="round"/>
+                        <!-- Plump Sitting Legs -->
+                        <ellipse cx="122" cy="288" rx="26" ry="30" transform="rotate(-18 122 288)" fill="#2A2D34" stroke="#1E242B" stroke-width="6"/>
+                        <ellipse cx="121" cy="291" rx="13" ry="15" transform="rotate(-18 121 291)" fill="#454A54"/>
+                        <ellipse cx="238" cy="288" rx="26" ry="30" transform="rotate(18 238 288)" fill="#2A2D34" stroke="#1E242B" stroke-width="6"/>
+                        <ellipse cx="239" cy="291" rx="13" ry="15" transform="rotate(18 239 291)" fill="#454A54"/>
+
+                        <!-- Ears -->
+                        <circle cx="126" cy="128" r="21" fill="#2A2D34" stroke="#1E242B" stroke-width="6" class="anim-ear-left"/>
+                        <circle cx="234" cy="128" r="21" fill="#2A2D34" stroke="#1E242B" stroke-width="6" class="anim-ear-right"/>
+
+                        <!-- Head with Warm Cream Cheek/Chin Shading -->
+                        <ellipse cx="180" cy="166" rx="66" ry="54" fill="#FAF8F5" stroke="#1E242B" stroke-width="6"/>
+                        <path d="M 118 173 C 126 205, 152 217, 180 217 C 208 217, 234 205, 242 173 C 228 190, 206 196, 180 196 C 154 196, 132 190, 118 173 Z" fill="#F2DEC9" opacity="0.72"/>
+
+                        <!-- Eye Patches & Curved Happy Eyes -->
+                        <ellipse cx="151" cy="163" rx="18" ry="14" transform="rotate(-22 151 163)" fill="#2A2D34"/>
+                        <ellipse cx="209" cy="163" rx="18" ry="14" transform="rotate(22 209 163)" fill="#2A2D34"/>
+                        <path d="M 143 163 Q 151 154 159 163" fill="none" stroke="#121417" stroke-width="4.2" stroke-linecap="round"/>
+                        <path d="M 201 163 Q 209 154 217 163" fill="none" stroke="#121417" stroke-width="4.2" stroke-linecap="round"/>
+
+                        <!-- Soft Blush Ovals -->
+                        <ellipse cx="137" cy="183" rx="10" ry="5.5" fill="#DFC3B4" opacity="0.9"/>
+                        <ellipse cx="223" cy="183" rx="10" ry="5.5" fill="#DFC3B4" opacity="0.9"/>
+
+                        <!-- Nose & Smile -->
+                        <ellipse cx="180" cy="175" rx="7.5" ry="5" fill="#1E242B"/>
+                        <path d="M 180 180 L 180 186 M 169 185 Q 174.5 192 180 186 Q 185.5 192 191 185" fill="none" stroke="#1E242B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+                        <!-- 3D-Perspective 2x3 Wooden Bookshelf -->
+                        <g class="anim-shelf-wiggle">
+                            <!-- Left Depth Side -->
+                            <path d="M 141 219 L 148 216 L 148 312 L 141 308 Z" fill="#683518" stroke="#1E242B" stroke-width="4.5" stroke-linejoin="round"/>
+                            <rect x="148" y="216" width="84" height="96" rx="8" fill="#8B4A24" stroke="#1E242B" stroke-width="5"/>
+                            <rect x="155" y="223" width="70" height="82" rx="4" fill="#5C2E14"/>
+                            <line x1="190" y1="223" x2="190" y2="305" stroke="#8B4A24" stroke-width="5"/>
+                            <line x1="155" y1="250" x2="225" y2="250" stroke="#8B4A24" stroke-width="5"/>
+                            <line x1="155" y1="278" x2="225" y2="278" stroke="#8B4A24" stroke-width="5"/>
+                            <!-- Top-left white paper stack -->
+                            <rect x="160" y="238" width="24" height="10" rx="1.5" fill="#F8FAFC" stroke="#1E242B" stroke-width="2"/>
+                            <!-- Top-right white papers + blue folder -->
+                            <rect x="196" y="234" width="24" height="6" rx="1" fill="#F8FAFC" stroke="#1E242B" stroke-width="2"/>
+                            <rect x="196" y="240" width="24" height="8" rx="1.5" fill="#2563EB" stroke="#1E242B" stroke-width="2"/>
+                            <!-- Mid-left yellow folder -->
+                            <rect x="161" y="261" width="22" height="15" rx="2" fill="#FBBF24" stroke="#1E242B" stroke-width="2"/>
+                            <!-- Mid-right vertical binders -->
+                            <rect x="195" y="256" width="8" height="20" rx="1.5" fill="#E2E8F0" stroke="#1E242B" stroke-width="2"/>
+                            <rect x="204" y="256" width="8" height="20" rx="1.5" fill="#CBD5E1" stroke="#1E242B" stroke-width="2"/>
+                            <rect x="213" y="256" width="8" height="20" rx="1.5" fill="#FACC15" stroke="#1E242B" stroke-width="2"/>
+                            <!-- Bottom white paper stacks -->
+                            <rect x="160" y="294" width="24" height="9" rx="1.5" fill="#F8FAFC" stroke="#1E242B" stroke-width="2"/>
+                            <rect x="196" y="294" width="24" height="9" rx="1.5" fill="#F8FAFC" stroke="#1E242B" stroke-width="2"/>
+                        </g>
+
+                        <!-- Hugging Paws -->
+                        <path d="M 118 228 C 110 245, 126 266, 152 263 C 163 261, 165 247, 153 243 C 141 239, 136 232, 134 224" fill="#2A2D34" stroke="#1E242B" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M 242 224 C 254 240, 246 263, 224 261 C 213 260, 212 246, 222 242 C 231 238, 232 230, 230 222" fill="#2A2D34" stroke="#1E242B" stroke-width="6" stroke-linecap="round"/>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Right: Horizontal Extending "Rak-it! Pacil" Title -->
+            <div class="text-center sm:text-left">
+                <div class="font-logo text-5xl sm:text-6xl font-bold tracking-tight leading-none flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                    <span class="logo-text-rakit">Rak-it!</span>
+                    <span class="logo-text-pacil">Pacil</span>
+                </div>
+                <p class="mt-2.5 text-xs sm:text-sm font-semibold text-stone-700">
+                    Sistem Pelacak Berkas & Kertas Kuis Sekretariat Fasilkom UI
+                </p>
+                <p class="mt-1.5 text-[11px] font-mono text-stone-500">
+                    Membuka arsip rak... <span class="underline text-stone-800">(klik untuk masuk)</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TOP HEADER (HORIZONTAL PANDA + RAK-IT! PACIL LOCKUP)                  -->
+    <!-- ===================================================================== -->
+    <header class="bg-white/95 backdrop-blur-xs border-b-[3px] border-slate-900 sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                
+                <!-- Horizontal Navbar Panda Logo (Left) & Typography Lockup (Right) -->
+                <button type="button" onclick="openWelcomeSplash()" title="Putar ulang splash logo Rak-it! Pacil" class="group flex items-center gap-3 text-left focus:outline-none cursor-pointer">
+                    <div class="w-12 h-12 shrink-0 flex items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+                        <svg viewBox="82 96 196 226" class="w-full h-full overflow-visible" aria-hidden="true">
+                            <ellipse cx="180" cy="252" rx="64" ry="56" fill="#FAF8F5" stroke="#1E242B" stroke-width="7"/>
+                            <path d="M 122 226 C 138 206, 222 206, 238 226 C 245 245, 240 268, 226 278 C 198 265, 162 265, 134 278 C 120 268, 115 245, 122 226 Z" fill="#2A2D34" stroke="#1E242B" stroke-width="7"/>
+                            <ellipse cx="122" cy="288" rx="25" ry="28" transform="rotate(-18 122 288)" fill="#2A2D34" stroke="#1E242B" stroke-width="7"/>
+                            <ellipse cx="238" cy="288" rx="25" ry="28" transform="rotate(18 238 288)" fill="#2A2D34" stroke="#1E242B" stroke-width="7"/>
+                            <circle cx="126" cy="128" r="21" fill="#2A2D34" stroke="#1E242B" stroke-width="7"/>
+                            <circle cx="234" cy="128" r="21" fill="#2A2D34" stroke="#1E242B" stroke-width="7"/>
+                            <ellipse cx="180" cy="166" rx="66" ry="54" fill="#FAF8F5" stroke="#1E242B" stroke-width="7"/>
+                            <path d="M 118 173 C 126 205, 152 217, 180 217 C 208 217, 234 205, 242 173 C 228 190, 206 196, 180 196 C 154 196, 132 190, 118 173 Z" fill="#F2DEC9" opacity="0.72"/>
+                            <ellipse cx="151" cy="163" rx="18" ry="14" transform="rotate(-22 151 163)" fill="#2A2D34"/>
+                            <ellipse cx="209" cy="163" rx="18" ry="14" transform="rotate(22 209 163)" fill="#2A2D34"/>
+                            <path d="M 143 163 Q 151 154 159 163" fill="none" stroke="#121417" stroke-width="4.5" stroke-linecap="round"/>
+                            <path d="M 201 163 Q 209 154 217 163" fill="none" stroke="#121417" stroke-width="4.5" stroke-linecap="round"/>
+                            <ellipse cx="137" cy="183" rx="10" ry="5.5" fill="#DFC3B4"/>
+                            <ellipse cx="223" cy="183" rx="10" ry="5.5" fill="#DFC3B4"/>
+                            <ellipse cx="180" cy="175" rx="7.5" ry="5" fill="#1E242B"/>
+                            <path d="M 180 180 L 180 186 M 169 185 Q 174.5 192 180 186 Q 185.5 192 191 185" fill="none" stroke="#1E242B" stroke-width="4" stroke-linecap="round"/>
+                            <g transform="rotate(-4 190 264)">
+                                <path d="M 141 219 L 148 216 L 148 312 L 141 308 Z" fill="#683518" stroke="#1E242B" stroke-width="5"/>
+                                <rect x="148" y="216" width="84" height="96" rx="8" fill="#8B4A24" stroke="#1E242B" stroke-width="6"/>
+                                <rect x="155" y="223" width="70" height="82" rx="4" fill="#5C2E14"/>
+                                <line x1="190" y1="223" x2="190" y2="305" stroke="#8B4A24" stroke-width="6"/>
+                                <line x1="155" y1="250" x2="225" y2="250" stroke="#8B4A24" stroke-width="6"/>
+                                <line x1="155" y1="278" x2="225" y2="278" stroke="#8B4A24" stroke-width="6"/>
+                                <rect x="160" y="238" width="24" height="9" fill="#F8FAFC" stroke="#1E242B" stroke-width="2"/>
+                                <rect x="196" y="238" width="24" height="9" fill="#2563EB" stroke="#1E242B" stroke-width="2"/>
+                                <rect x="161" y="261" width="22" height="14" fill="#FBBF24" stroke="#1E242B" stroke-width="2"/>
+                                <rect x="196" y="257" width="24" height="18" fill="#FACC15" stroke="#1E242B" stroke-width="2"/>
+                            </g>
+                            <path d="M 118 228 C 110 245, 126 266, 152 263 C 163 261, 165 247, 153 243" fill="#2A2D34" stroke="#1E242B" stroke-width="7" stroke-linecap="round"/>
+                            <path d="M 242 224 C 254 240, 246 263, 224 261 C 213 260, 212 246, 222 242" fill="#2A2D34" stroke="#1E242B" stroke-width="7" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-logo text-2xl sm:text-[28px] font-bold tracking-tight leading-none flex items-center gap-1.5">
+                                <span class="logo-text-rakit">Rak-it!</span>
+                                <span class="logo-text-pacil">Pacil</span>
+                            </h1>
+                            <span class="px-2.5 py-0.5 text-[11px] font-logo font-bold bg-[#DBEAFE] text-[#1D4ED8] border-2 border-slate-900 rounded-full shadow-[0_2px_0_#0F172A]">
+                                SEKRETARIAT
+                            </span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-600 mt-1">
+                            Pelacak Berkas & Kertas Kuis Fasilkom UI
+                        </p>
+                    </div>
+                </button>
+
+                <!-- Action Buttons & SSO UI User Session -->
+                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+                    <!-- Active SSO User Pill -->
+                    <div id="user-session-badge" class="hidden items-center gap-2 px-3.5 py-1.5 bg-slate-50 border-[2.5px] border-slate-900 rounded-2xl shadow-[0_3px_0_#0F172A]">
+                        <div class="text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <span id="nav-user-name" class="text-xs font-extrabold text-slate-900 truncate max-w-[140px]">User</span>
+                                <span id="nav-user-role-pill" class="px-2 py-0.5 text-[10px] font-logo font-bold bg-[#1D4ED8] text-white rounded-full">ASDOS</span>
+                            </div>
+                            <p id="nav-user-npm" class="text-[10px] font-mono font-semibold text-slate-500">2306214509 • SSO UI</p>
+                        </div>
+                    </div>
+
+                    <!-- Notification Bell Button -->
+                    <button id="btn-notif-bell" type="button" onclick="toggleNotificationPanel()" title="Notifikasi Kuis" class="tactile-btn hidden relative items-center justify-center gap-1.5 px-3 py-2 bg-[#FEF9C3] hover:bg-[#FEF08A] text-slate-900 text-xs font-extrabold cursor-pointer">
+                        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <span class="hidden sm:inline">Notif</span>
+                        <span id="notif-badge-count" class="hidden px-1.5 py-0.2 bg-[#EA580C] text-white text-[10px] font-mono font-bold rounded-full border border-slate-900">0</span>
+                    </button>
+
+                    <!-- Asdos-only Add Button (Fasilkom Blue Accent) -->
+                    <button id="btn-add-rack-item" onclick="openInputModal('envelope')" class="tactile-btn hidden items-center justify-center gap-1.5 px-4 py-2 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white text-xs sm:text-sm font-extrabold cursor-pointer">
+                        <span>+ Taruh Berkas / Kuis</span>
+                    </button>
+
+                    <button onclick="resetDemoData()" title="Reset ke data awal" class="tactile-btn inline-flex items-center justify-center px-3 py-2 bg-white hover:bg-blue-50 text-slate-800 text-xs font-extrabold cursor-pointer">
+                        Reset
+                    </button>
+
+                    <button id="btn-logout-sso" onclick="logoutSso()" class="tactile-btn hidden items-center justify-center px-3 py-2 bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-extrabold cursor-pointer">
+                        Keluar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- MAIN WORKSPACE                                                        -->
+    <!-- ===================================================================== -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+        <!-- 0. Notification Inbox Panel (Personal Student Alerts / TA Sent Log) -->
+        <section id="student-notif-panel" class="hidden paper-card p-4 sm:p-5 bg-[#FEFCE8] space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 bg-[#EA580C] text-white text-[11px] font-logo font-bold border-2 border-slate-900 rounded-full shadow-[0_2px_0_#0F172A]">
+                        INBOX NOTIF
+                    </span>
+                    <h2 id="notif-panel-title" class="font-logo text-base font-bold text-slate-900">
+                        Notifikasi Kuis Kamu
+                    </h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="btn-mark-all-read" type="button" onclick="markAllNotificationsRead()" class="hidden px-2.5 py-1 bg-white hover:bg-slate-100 border-2 border-slate-900 rounded-xl text-[11px] font-extrabold text-slate-800 cursor-pointer">
+                        Tandai Semua Dibaca
+                    </button>
+                    <button type="button" onclick="toggleNotificationPanel(false)" class="px-2.5 py-1 bg-white hover:bg-slate-100 border-2 border-slate-900 rounded-xl text-[11px] font-extrabold text-slate-800 cursor-pointer">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+            <div id="notif-panel-list" class="space-y-2"></div>
+        </section>
+
+        <!-- 1. Search Bar & Compact Inventory Strip -->
+        <section class="paper-card p-4 sm:p-5 space-y-3.5">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                <!-- Search Input -->
+                <div class="flex-1">
+                    <label for="search-input" class="block text-xs font-extrabold text-slate-800 mb-1.5">
+                        Cari Nama Mahasiswa, NPM, atau Mata Kuliah
+                    </label>
+                    <div class="relative flex items-center">
+                        <svg class="w-4 h-4 text-slate-500 absolute left-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z" />
+                        </svg>
+                        <input type="text" id="search-input" placeholder="Ketik nama, NPM (misal 2406...), atau matkul (DDP, SDA, Basdat)..." 
+                            class="w-full pl-10 pr-16 py-2.5 bg-slate-50 border-[2.5px] border-slate-900 rounded-2xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#1D4ED8]/25 transition-all">
+                        <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-2.5 px-2.5 py-1 text-[11px] font-bold bg-orange-100 hover:bg-orange-200 text-[#EA580C] border border-slate-900 rounded-xl cursor-pointer">
+                            Hapus
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Original Blue / Coral / Mint Cartoon Counters -->
+                <div class="grid grid-cols-3 gap-2.5 lg:w-auto shrink-0">
+                    <div class="bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-2xl px-3.5 py-2 shadow-[0_3px_0_#0F172A]">
+                        <span class="block text-[11px] font-extrabold text-[#1E40AF]">Berkas Cokelat</span>
+                        <span id="stat-envelopes" class="font-logo text-xl font-bold text-[#1D4ED8]">0</span>
+                    </div>
+                    <div class="bg-[#FFEDD5] border-[2.5px] border-slate-900 rounded-2xl px-3.5 py-2 shadow-[0_3px_0_#0F172A]">
+                        <span class="block text-[11px] font-extrabold text-[#9A3412]">Kertas Lepas</span>
+                        <span id="stat-loose" class="font-logo text-xl font-bold text-[#EA580C]">0</span>
+                    </div>
+                    <div class="bg-[#D1FAE5] border-[2.5px] border-slate-900 rounded-2xl px-3.5 py-2 shadow-[0_3px_0_#0F172A]">
+                        <span class="block text-[11px] font-extrabold text-[#065F46]">Total Lembar</span>
+                        <span id="stat-available" class="font-logo text-xl font-bold text-[#059669]">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Search Match Result Strip -->
+            <div id="search-match-banner" class="hidden bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-[0_3px_0_#0F172A]">
+                <span id="search-match-text" class="text-xs sm:text-sm font-bold text-slate-900">
+                    Ditemukan di beberapa loker!
+                </span>
+                <div id="search-match-buttons" class="flex flex-wrap items-center gap-1.5"></div>
+            </div>
+        </section>
+
+        <!-- 2. CARTOON 3x5 WOODEN BOOKSHELF UNIT (3 KOLOM x 5 BARIS) -->
+        <section aria-label="Denah Rak Sekretariat 3 Kolom 5 Baris" class="space-y-3">
+            
+            <!-- Section Header & Inline Legend -->
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 px-0.5">
+                <div>
+                    <h2 class="font-logo text-lg sm:text-xl font-bold tracking-tight text-slate-900">
+                        Lemari Rak Kuis Sekretariat (3 Kolom × 5 Baris)
+                    </h2>
+                    <p class="text-xs font-medium text-slate-600">
+                        Klik kotak loker kayu untuk membuka daftar Berkas & Kertas Kuis di dalamnya!
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2.5 text-[11px] font-bold text-slate-800">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border-2 border-slate-900 rounded-full">
+                        <span class="w-3.5 h-2.5 bg-[#E2AC76] border border-slate-900 rounded-xs inline-block"></span> Berkas Cokelat
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border-2 border-slate-900 rounded-full">
+                        <span class="w-3.5 h-2.5 bg-white border border-slate-900 rounded-xs inline-block"></span> Kertas Lepas
+                    </span>
+                    <span id="role-permission-hint" class="px-2.5 py-1 bg-[#D1FAE5] border-2 border-slate-900 rounded-full text-[11px] font-extrabold text-[#065F46]">
+                        Mode Akses
+                    </span>
+                </div>
+            </div>
+
+            <!-- Cartoon Wooden Bookshelf Cabinet -->
+            <div class="cabinet-shell p-3.5 sm:p-5 relative">
+                
+                <!-- Top Cartoon Wood Grain Highlights -->
+                <div class="flex items-center justify-between mb-3 pl-9 sm:pl-12">
+                    <div class="grid grid-cols-3 gap-2.5 sm:gap-4 w-full">
+                        <div class="bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-xl py-1.5 px-2 text-center shadow-[0_3px_0_#0F172A]">
+                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">KOLOM A</span>
+                            <span class="hidden sm:inline text-[11px] font-bold text-slate-600 ml-1">(A1–A5)</span>
+                        </div>
+                        <div class="bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-xl py-1.5 px-2 text-center shadow-[0_3px_0_#0F172A]">
+                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">KOLOM B</span>
+                            <span class="hidden sm:inline text-[11px] font-bold text-slate-600 ml-1">(B1–B5)</span>
+                        </div>
+                        <div class="bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-xl py-1.5 px-2 text-center shadow-[0_3px_0_#0F172A]">
+                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">KOLOM C</span>
+                            <span class="hidden sm:inline text-[11px] font-bold text-slate-600 ml-1">(C1–C5)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 Rows x 3 Columns Container -->
+                <div id="cartoon-rack-rows" class="space-y-3 sm:space-y-4"></div>
+
+                <!-- Wooden Cabinet Feet & Bottom Stamp -->
+                <div class="mt-4 pt-2.5 border-t-2 border-[#8C5225] flex items-center justify-between text-[11px] font-logo font-bold text-white px-1">
+                    <span>LEMARI KAYU RAK-IT • 15 LOKER</span>
+                    <span>SEKRETARIAT FASILKOM UI</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t-2 border-slate-900 bg-white mt-10 py-4">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-600">
+            <p><strong class="text-slate-900 font-extrabold">Rak-it! Pacil</strong> — Sistem Inventaris Kertas Kuis Sekretariat Fasilkom UI</p>
+            <p class="font-mono text-[11px]">Python Flask + JSON (Kelompok 13 DDP1-G)</p>
+        </div>
+    </footer>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL 0: SSO UI LOGIN GATE (WAJIB LOGIN SEBELUM AKSES RAK)            -->
+    <!-- ===================================================================== -->
+    <div id="sso-login-modal" class="fixed inset-0 z-40 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
+        <div class="bg-white border-[3px] border-slate-900 rounded-3xl max-w-md w-full shadow-[0_8px_0_#0F172A] overflow-hidden my-auto">
+            <div class="bg-[#1D4ED8] px-5 py-4 border-b-[3px] border-slate-900 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <span class="px-2.5 py-1 bg-white text-[#1D4ED8] border-2 border-slate-900 font-logo text-xs font-bold rounded-xl shadow-[0_2px_0_#0F172A]">
+                        SSO UI
+                    </span>
+                    <div>
+                        <h3 class="font-logo text-lg font-bold text-white leading-tight">Masuk ke Rak-it! Pacil</h3>
+                        <p class="text-[11px] font-semibold text-blue-100">Single Sign-On Universitas Indonesia</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="sso-login-form" onsubmit="handleSsoLogin(event)" class="p-5 space-y-4">
+                <div class="bg-blue-50 border-2 border-slate-900 rounded-2xl p-3 text-xs text-slate-700 space-y-1">
+                    <p class="font-extrabold text-[#1D4ED8]">Ketentuan Akses Rak Sekretariat:</p>
+                    <p>&bull; <strong>Asdos:</strong> Dapat menaruh amplop cokelat & kertas lepas ke rak, serta mengecek isi rak.</p>
+                    <p>&bull; <strong>Mahasiswa:</strong> Dapat mengecek isi loker & mengambil kuis (tidak dapat menaruh berkas baru).</p>
+                </div>
+
+                <div>
+                    <label for="sso-username" class="block text-xs font-extrabold text-slate-800 mb-1">
+                        Username SSO UI <span class="text-[#EA580C]">*</span>
+                    </label>
+                    <div class="flex items-center">
+                        <input type="text" id="sso-username" required placeholder="nama.mahasiswa"
+                            class="w-full px-3.5 py-2 bg-slate-50 border-2 border-slate-900 rounded-l-xl text-sm font-mono text-slate-900 focus:outline-none focus:bg-white">
+                        <span class="px-3 py-2 bg-slate-200 border-y-2 border-r-2 border-slate-900 rounded-r-xl text-xs font-mono font-bold text-slate-800 shrink-0">
+                            @ui.ac.id
+                        </span>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="sso-password" class="block text-xs font-extrabold text-slate-800 mb-1">
+                        Password SSO <span class="text-[#EA580C]">*</span>
+                    </label>
+                    <input type="password" id="sso-password" required placeholder="••••••••••••"
+                        class="w-full px-3.5 py-2 bg-slate-50 border-2 border-slate-900 rounded-xl text-sm text-slate-900 focus:outline-none focus:bg-white">
+                </div>
+
+                <!-- Quick Demo Account Switcher -->
+                <div class="pt-1">
+                    <p class="text-[11px] font-extrabold text-slate-700 mb-1.5">Akun Simulasi Cepat (Klik untuk isi otomatis):</p>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <button type="button" onclick="quickFillSso('asdos')" class="tactile-btn p-2.5 bg-[#DBEAFE] hover:bg-blue-200 text-left cursor-pointer">
+                            <span class="block text-[10px] font-logo font-bold text-[#1D4ED8]">ROLE: ASDOS</span>
+                            <span class="block text-xs font-extrabold text-slate-900 truncate">Jonathan Tan</span>
+                            <span class="block text-[10px] font-mono text-slate-700">jonathan.tan</span>
+                        </button>
+                        <button type="button" onclick="quickFillSso('mahasiswa')" class="tactile-btn p-2.5 bg-[#D1FAE5] hover:bg-emerald-200 text-left cursor-pointer">
+                            <span class="block text-[10px] font-logo font-bold text-[#059669]">ROLE: MAHASISWA</span>
+                            <span class="block text-xs font-extrabold text-slate-900 truncate">Alya Zahra</span>
+                            <span class="block text-[10px] font-mono text-slate-700">alya.zahra24</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="tactile-btn w-full py-2.5 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white text-sm font-extrabold cursor-pointer">
+                    Login dengan SSO UI
+                </button>
+                {% if real_sso_enabled %}
+                <a href="/auth/sso/login" class="tactile-btn block w-full py-2 bg-[#EFF6FF] hover:bg-blue-100 text-[#1D4ED8] text-xs font-extrabold text-center cursor-pointer">
+                    Login via SSO UI Asli (sso.ui.ac.id)
+                </a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL 1: TWO-LEVEL CUBBY DRAWER VIEW                                  -->
+    <!-- ===================================================================== -->
+    <div id="cubby-drawer-modal" class="fixed inset-0 z-40 hidden items-center justify-center p-3 sm:p-5 bg-slate-950/60 backdrop-blur-xs overflow-y-auto">
+        <div class="bg-[#F8FAFC] border-[3px] border-slate-900 rounded-3xl max-w-3xl w-full shadow-[0_8px_0_#0F172A] overflow-hidden my-auto flex flex-col max-h-[90vh]">
+            
+            <!-- Drawer Top Header -->
+            <div class="bg-[#1D4ED8] px-5 py-3.5 border-b-[3px] border-slate-900 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-3">
+                    <div id="drawer-cubby-badge" class="w-11 h-11 rounded-2xl bg-[#DBEAFE] text-[#1D4ED8] border-[2.5px] border-slate-900 font-logo text-lg font-bold flex items-center justify-center shadow-[0_3px_0_#0F172A]">
+                        A1
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 id="drawer-title" class="font-logo text-lg sm:text-xl font-bold text-white">Isi Loker A1</h3>
+                            <span id="drawer-count-pill" class="px-2.5 py-0.5 text-[11px] font-bold bg-white text-slate-900 border-2 border-slate-900 rounded-full">
+                                0 Amplop
+                            </span>
+                        </div>
+                        <p id="drawer-subtitle" class="text-xs font-bold text-blue-100">Kolom A &bull; Baris 1</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="drawer-btn-add-cubby" onclick="openInputForCurrentCubby()" class="tactile-btn hidden items-center gap-1.5 px-3.5 py-1.5 bg-[#10B981] hover:bg-[#059669] text-white text-xs font-extrabold cursor-pointer">
+                        + Taruh ke Loker Ini
+                    </button>
+                    <button onclick="closeCubbyDrawer()" class="tactile-btn w-9 h-9 flex items-center justify-center bg-white hover:bg-red-50 text-slate-900 text-sm font-extrabold cursor-pointer" title="Tutup">
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Breadcrumb & Cubby Switcher Bar -->
+            <div class="bg-blue-50 border-b-2 border-slate-900 px-5 py-2.5 flex flex-wrap items-center justify-between gap-2 shrink-0">
+                <div id="drawer-breadcrumb" class="flex items-center gap-1.5 text-xs font-extrabold text-slate-900"></div>
+
+                <div class="flex items-center gap-1.5">
+                    <label for="drawer-cubby-switcher" class="text-[11px] font-bold text-slate-600">Pindah Loker:</label>
+                    <select id="drawer-cubby-switcher" onchange="openCubbyDrawer(this.value)" class="px-2.5 py-1 bg-white border-2 border-slate-900 rounded-xl text-xs font-logo font-bold text-slate-900 cursor-pointer"></select>
+                </div>
+            </div>
+
+            <!-- Scrollable Drawer Body -->
+            <div id="drawer-body-container" class="p-4 sm:p-5 overflow-y-auto space-y-5 flex-1"></div>
+
+            <!-- Drawer Bottom Bar -->
+            <div class="bg-white border-t-2 border-slate-900 px-5 py-3 flex items-center justify-between shrink-0">
+                <button id="drawer-btn-add-cubby-mobile" onclick="openInputForCurrentCubby()" class="tactile-btn hidden items-center gap-1 px-3 py-1.5 bg-[#10B981] text-white text-xs font-extrabold cursor-pointer">
+                    + Taruh Berkas
+                </button>
+                <span id="drawer-footer-hint" class="text-xs font-medium text-slate-600">
+                    Klik amplop cokelat untuk melihat daftar nama mahasiswa di dalamnya.
+                </span>
+                <button onclick="closeCubbyDrawer()" class="tactile-btn px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold cursor-pointer ml-auto">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL 2: KONFIRMASI AMBIL KUIS                                        -->
+    <!-- ===================================================================== -->
+    <div id="pickup-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+        <div class="bg-white border-[3px] border-slate-900 rounded-3xl max-w-md w-full shadow-[0_8px_0_#0F172A] overflow-hidden">
+            <div class="bg-[#10B981] px-5 py-3.5 border-b-[3px] border-slate-900 flex items-center justify-between">
+                <h3 class="font-logo text-base font-bold text-white">Konfirmasi Pengambilan Kuis</h3>
+                <button onclick="closePickupModal()" class="text-white hover:text-slate-100 font-extrabold cursor-pointer">✕</button>
+            </div>
+
+            <form id="pickup-form" onsubmit="confirmPickup(event)" class="p-5 space-y-4">
+                <input type="hidden" id="pickup-quiz-id">
+                
+                <div class="bg-emerald-50 border-2 border-slate-900 rounded-2xl p-3.5 space-y-1">
+                    <div class="flex items-center justify-between gap-2">
+                        <span id="pickup-rack-badge" class="px-2.5 py-0.5 text-[11px] font-bold bg-[#DBEAFE] text-[#1D4ED8] border border-slate-900 rounded-full">Loker A1</span>
+                        <span id="pickup-npm-display" class="text-xs font-mono font-bold text-slate-800">NPM: 2406...</span>
+                    </div>
+                    <h4 id="pickup-student-name" class="font-extrabold text-slate-900 text-base pt-1">Nama Mahasiswa</h4>
+                    <p id="pickup-course-info" class="text-xs text-slate-700 font-semibold">Amplop Cokelat - Mata Kuliah</p>
+                </div>
+
+                <div>
+                    <label for="pickup-verifier" class="block text-xs font-extrabold text-slate-800 mb-1.5">
+                        NPM / Nama Pengambil <span class="text-[#EA580C]">*</span>
+                    </label>
+                    <input type="text" id="pickup-verifier" required placeholder="Masukkan NPM kamu atau teman yang menitip"
+                        class="w-full px-3.5 py-2 bg-slate-50 border-2 border-slate-900 rounded-xl text-sm focus:outline-none focus:bg-white">
+                    <p id="pickup-sso-recorder-note" class="text-[11px] font-mono text-slate-500 mt-1">
+                        Dicatat atas sesi SSO UI aktif.
+                    </p>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" onclick="closePickupModal()" class="tactile-btn px-4 py-1.5 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit" class="tactile-btn px-4 py-1.5 bg-[#10B981] hover:bg-[#059669] text-white text-xs font-extrabold cursor-pointer">
+                        Tandai Sudah Diambil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL 3: TARUH AMPLOP COKELAT BARU / SISA KERTAS LEPAS (ASDOS ONLY)   -->
+    <!-- ===================================================================== -->
+    <div id="input-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs overflow-y-auto">
+        <div class="bg-white border-[3px] border-slate-900 rounded-3xl max-w-xl w-full shadow-[0_8px_0_#0F172A] overflow-hidden my-auto max-h-[92vh] flex flex-col">
+            <div class="bg-[#1D4ED8] px-5 py-3.5 border-b-[3px] border-slate-900 flex items-center justify-between shrink-0">
+                <div>
+                    <h3 class="font-logo text-base font-bold text-white">Taruh Berkas ke Rak</h3>
+                    <p id="input-modal-ta-subtitle" class="text-xs font-bold text-blue-100">Pilih kelas yang diampu & centang mahasiswa yang kuisnya sudah dinilai</p>
+                </div>
+                <button onclick="closeInputModal()" class="w-8 h-8 rounded-xl bg-white border-2 border-slate-900 text-slate-900 font-extrabold cursor-pointer">✕</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex border-b-2 border-slate-900 bg-blue-50 px-5 pt-2.5 gap-2 shrink-0">
+                <button type="button" id="tab-envelope" onclick="switchInputTab('envelope')" class="px-3.5 py-1.5 text-xs font-extrabold rounded-t-xl border-t-2 border-x-2 border-slate-900 bg-white text-[#1D4ED8] -mb-0.5 cursor-pointer">
+                    Amplop Cokelat (Asdos)
+                </button>
+                <button type="button" id="tab-loose" onclick="switchInputTab('loose')" class="px-3.5 py-1.5 text-xs font-extrabold rounded-t-xl text-slate-600 hover:text-slate-900 cursor-pointer">
+                    Kertas Lepas (Tanpa Amplop)
+                </button>
+            </div>
+
+            <!-- TAB 1: NEW BROWN ENVELOPE (CLASS DROPDOWN + MARKED STUDENT CHECKLIST) -->
+            <form id="envelope-input-form" onsubmit="handleEnvelopeSubmit(event)" class="p-5 space-y-3.5 overflow-y-auto flex-1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="env-class" class="block text-xs font-extrabold text-slate-800 mb-1">
+                            Kelas Diampu (SCELE) <span class="text-[#EA580C]">*</span>
+                        </label>
+                        <select id="env-class" required onchange="onEnvClassChange()"
+                            class="w-full px-3 py-2 bg-[#EFF6FF] border-2 border-slate-900 rounded-xl text-sm font-extrabold text-slate-900 focus:outline-none focus:bg-white cursor-pointer">
+                        </select>
+                    </div>
+                    <div>
+                        <label for="env-label" class="block text-xs font-extrabold text-slate-800 mb-1">
+                            Nama Kuis / Penilaian <span class="text-[#EA580C]">*</span>
+                        </label>
+                        <input type="text" id="env-label" required placeholder="Misal: Kuis 2 - List & String"
+                            class="w-full px-3 py-2 bg-[#FFFDF7] border-2 border-slate-900 rounded-xl text-sm font-medium focus:outline-none focus:bg-white">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="env-rack" class="block text-xs font-extrabold text-slate-800 mb-1">Loker Tujuan (A1–C5) <span class="text-[#EA580C]">*</span></label>
+                        <select id="env-rack" required class="w-full px-3 py-2 bg-[#FFFDF7] border-2 border-slate-900 rounded-xl text-sm font-logo font-bold text-slate-900 focus:outline-none cursor-pointer"></select>
+                    </div>
+                    <div>
+                        <label for="env-folder" class="block text-xs font-extrabold text-slate-800 mb-1">Jenis Sampul <span class="text-[#EA580C]">*</span></label>
+                        <select id="env-folder" required class="w-full px-3 py-2 bg-[#F3D2AE]/50 border-2 border-slate-900 rounded-xl text-sm font-bold text-slate-900 focus:outline-none cursor-pointer">
+                            <option value="Amplop Cokelat">Amplop Cokelat</option>
+                            <option value="Amplop Cokelat Besar">Amplop Cokelat Besar (Folio)</option>
+                            <option value="Map Kuning">Map Kuning</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Student Checklist Section -->
+                <div class="bg-slate-50 border-2 border-slate-900 rounded-2xl p-3 space-y-2.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <span class="block text-xs font-extrabold text-slate-900">
+                                Checklist Mahasiswa (Kuis Sudah Dinilai) <span class="text-[#EA580C]">*</span>
+                            </span>
+                            <span class="block text-[11px] font-medium text-slate-600">
+                                Centang mahasiswa yang kertasnya ada di amplop ini (hapus centang jika absen/belum dinilai).
+                            </span>
+                        </div>
+                        <span id="env-checklist-count" class="px-2.5 py-0.5 bg-[#D1FAE5] text-[#065F46] border-2 border-slate-900 rounded-full text-[11px] font-mono font-bold shrink-0">
+                            0 / 0 dinilai
+                        </span>
+                    </div>
+
+                    <!-- Checklist Filter & Quick Toggles -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input type="text" id="env-student-filter" oninput="renderEnvStudentChecklist()" placeholder="Filter nama atau NPM di kelas ini..."
+                            class="flex-1 min-w-[160px] px-3 py-1.5 bg-white border-2 border-slate-900 rounded-xl text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/25">
+                        <button type="button" onclick="setAllEnvStudents(true)" class="px-2.5 py-1.5 bg-[#DBEAFE] hover:bg-blue-200 border-2 border-slate-900 rounded-xl text-[11px] font-extrabold text-[#1D4ED8] cursor-pointer">
+                            Pilih Semua
+                        </button>
+                        <button type="button" onclick="setAllEnvStudents(false)" class="px-2.5 py-1.5 bg-white hover:bg-slate-100 border-2 border-slate-900 rounded-xl text-[11px] font-extrabold text-slate-700 cursor-pointer">
+                            Batal Semua
+                        </button>
+                    </div>
+
+                    <!-- Dynamic Student Checkbox List -->
+                    <div id="env-student-checklist" class="max-h-48 overflow-y-auto space-y-1.5 pr-1"></div>
+                </div>
+
+                <!-- Notification Dispatch Options -->
+                <div class="bg-[#EFF6FF] border-2 border-slate-900 rounded-2xl p-3 space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" id="env-notify-enabled" checked onchange="toggleNotifyChannelChips()"
+                            class="w-4 h-4 accent-[#1D4ED8] rounded cursor-pointer">
+                        <span class="text-xs font-extrabold text-slate-900">
+                            Kirim notifikasi otomatis ke mahasiswa yang dicentang
+                        </span>
+                    </label>
+                    <div id="env-notify-channels" class="flex flex-wrap items-center gap-2 pl-6">
+                        <label class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border-2 border-slate-900 rounded-full text-[11px] font-bold text-slate-800 cursor-pointer">
+                            <input type="checkbox" id="notif-ch-web" checked class="accent-[#1D4ED8] cursor-pointer"> Inbox Web
+                        </label>
+                        <label class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border-2 border-slate-900 rounded-full text-[11px] font-bold text-slate-800 cursor-pointer">
+                            <input type="checkbox" id="notif-ch-email" checked class="accent-[#1D4ED8] cursor-pointer"> Email @ui.ac.id
+                        </label>
+                        <label class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border-2 border-slate-900 rounded-full text-[11px] font-bold text-slate-800 cursor-pointer">
+                            <input type="checkbox" id="notif-ch-chat" class="accent-[#1D4ED8] cursor-pointer"> Telegram / Discord
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
+                    <button type="button" onclick="closeInputModal()" class="tactile-btn px-4 py-1.5 bg-white text-slate-800 text-xs font-extrabold cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit" id="env-submit-btn" class="tactile-btn px-4 py-1.5 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white text-xs font-extrabold cursor-pointer">
+                        Simpan Amplop &amp; Notifikasi
+                    </button>
+                </div>
+            </form>
+
+            <!-- TAB 2: LOOSE PAPER SHEET -->
+            <form id="loose-input-form" onsubmit="handleLooseSubmit(event)" class="hidden p-5 space-y-3.5 overflow-y-auto flex-1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="loose-class" class="block text-xs font-extrabold text-slate-800 mb-1">
+                            Kelas Diampu (SCELE) <span class="text-[#EA580C]">*</span>
+                        </label>
+                        <select id="loose-class" onchange="onLooseClassChange()"
+                            class="w-full px-3 py-2 bg-[#EFF6FF] border-2 border-slate-900 rounded-xl text-sm font-extrabold text-slate-900 focus:outline-none cursor-pointer">
+                        </select>
+                    </div>
+                    <div>
+                        <label for="loose-student" class="block text-xs font-extrabold text-slate-800 mb-1">
+                            Pilih Mahasiswa <span class="text-[#EA580C]">*</span>
+                        </label>
+                        <select id="loose-student" onchange="onLooseStudentChange()"
+                            class="w-full px-3 py-2 bg-[#FFFDF7] border-2 border-slate-900 rounded-xl text-sm font-bold text-slate-900 focus:outline-none cursor-pointer">
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Manual Student Input Fallback (shown when '-- Input Manual --' is picked) -->
+                <div id="loose-manual-fields" class="hidden grid-cols-1 sm:grid-cols-2 gap-3 bg-orange-50 border-2 border-slate-900 rounded-2xl p-3">
+                    <div>
+                        <label for="loose-name" class="block text-xs font-extrabold text-slate-800 mb-1">Nama Mahasiswa <span class="text-[#EA580C]">*</span></label>
+                        <input type="text" id="loose-name" placeholder="Misal: Rafi Ahmad"
+                            class="w-full px-3 py-2 bg-white border-2 border-slate-900 rounded-xl text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="loose-npm" class="block text-xs font-extrabold text-slate-800 mb-1">NPM (10 Digit) <span class="text-[#EA580C]">*</span></label>
+                        <input type="text" id="loose-npm" pattern="[0-9]{10}" maxlength="10" placeholder="2406123456"
+                            class="w-full px-3 py-2 bg-white border-2 border-slate-900 rounded-xl text-sm font-mono focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="loose-title" class="block text-xs font-extrabold text-slate-800 mb-1">Judul Kuis <span class="text-[#EA580C]">*</span></label>
+                        <input type="text" id="loose-title" required placeholder="Misal: Kuis 1 (Amplop Sobek)"
+                            class="w-full px-3 py-2 bg-[#FFFDF7] border-2 border-slate-900 rounded-xl text-sm">
+                    </div>
+                    <div>
+                        <label for="loose-rack" class="block text-xs font-extrabold text-slate-800 mb-1">Loker (A1–C5)</label>
+                        <select id="loose-rack" class="w-full px-3 py-2 bg-[#FFFDF7] border-2 border-slate-900 rounded-xl text-sm font-logo font-bold cursor-pointer"></select>
+                    </div>
+                </div>
+
+                <label class="flex items-center gap-2 bg-[#EFF6FF] border-2 border-slate-900 rounded-2xl px-3 py-2.5 cursor-pointer select-none">
+                    <input type="checkbox" id="loose-notify-enabled" checked class="w-4 h-4 accent-[#1D4ED8] rounded cursor-pointer">
+                    <span class="text-xs font-extrabold text-slate-900">Kirim notifikasi ke mahasiswa terpilih</span>
+                </label>
+
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
+                    <button type="button" onclick="closeInputModal()" class="tactile-btn px-4 py-1.5 bg-white text-slate-800 text-xs font-extrabold cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit" class="tactile-btn px-4 py-1.5 bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-extrabold cursor-pointer">
+                        Simpan Kertas Lepas
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TOAST NOTIFICATION CONTAINER                                          -->
+    <!-- ===================================================================== -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- ===================================================================== -->
+    <!-- APPLICATION LOGIC (JAVASCRIPT)                                        -->
+    <!-- ===================================================================== -->
+    
+<script>
+        const INITIAL_CUBBY = {{ initial_cubby | tojson }};
+        const REAL_SSO_ENABLED = {{ real_sso_enabled | tojson }};
+
+        const COLUMNS = ['A', 'B', 'C'];
+        const ROWS = [1, 2, 3, 4, 5];
+
+        function getAllCubbyIds() {
+            const list = [];
+            for (const r of ROWS) {
+                for (const c of COLUMNS) {
+                    list.push(`${c}${r}`);
+                }
+            }
+            return list;
+        }
+
+        let envelopes = [];
+        let quizzes = [];
+        let notifications = [];
+        let classRosters = {};
+        let suggestedCubby = 'A1';
+        let currentStats = { envelopes: 0, loose: 0, available: 0 };
+        let currentUser = null;
+        let activeCubbyId = null;
+        let activeEnvelopeId = null;
+        let selectedStudentNpms = new Set();
+        let notifPanelOpen = false;
+        let stateLoaded = false;
+        let initialCubbyOpened = false;
+        let splashAutoFadeTimer = null;
+        let splashHideTimer = null;
+
+        async function apiRequest(url, payload = null, method = 'POST') {
+            const opts = {
+                method,
+                headers: { 'Accept': 'application/json' }
+            };
+            if (payload !== null) {
+                opts.headers['Content-Type'] = 'application/json';
+                opts.body = JSON.stringify(payload);
+            }
+            const res = await fetch(url, opts);
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                throw new Error(data.error || `Permintaan gagal (${res.status})`);
+            }
+            return data;
+        }
+
+        function applyServerState(state) {
+            if (!state) return;
+            currentUser = state.user || null;
+            envelopes = Array.isArray(state.envelopes) ? state.envelopes : [];
+            quizzes = Array.isArray(state.quizzes) ? state.quizzes : [];
+            notifications = Array.isArray(state.notifications) ? state.notifications : [];
+            classRosters = state.classRosters || {};
+            suggestedCubby = state.suggestedCubby || 'A1';
+            currentStats = state.stats || { envelopes: 0, loose: 0, available: 0 };
+            stateLoaded = true;
+            populateCubbyDropdowns();
+        }
+
+        function maybeHandleInitialEntry() {
+            if (!stateLoaded) return;
+            const splash = document.getElementById('welcome-splash-modal');
+            if (splash && !splash.classList.contains('hidden')) return;
+
+            if (!currentUser) {
+                openSsoLoginModal();
+            } else if (INITIAL_CUBBY && !initialCubbyOpened) {
+                initialCubbyOpened = true;
+                openCubbyDrawer(INITIAL_CUBBY);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            populateCubbyDropdowns();
+            setupSearchListener();
+            updateAuthUI();
+            renderAll();
+            triggerInitialSplashFade();
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    fadeOutWelcomeSplash();
+                    closeCubbyDrawer();
+                    closePickupModal();
+                    closeInputModal();
+                }
+            });
+
+            try {
+                const state = await apiRequest('/api/state', null, 'GET');
+                applyServerState(state);
+                notifPanelOpen = Boolean(currentUser && !isAsdos() && notifications.some(n => !n.read));
+                updateAuthUI();
+                renderAll();
+                maybeHandleInitialEntry();
+            } catch (err) {
+                showToast('Gagal Memuat Data', err.message);
+            }
+        });
+
+        // =====================================================================
+        // WELCOME SPLASH FADING ANIMATION
+        // =====================================================================
+        function triggerInitialSplashFade() {
+            const modal = document.getElementById('welcome-splash-modal');
+            if (!modal) return;
+            clearTimeout(splashAutoFadeTimer);
+            clearTimeout(splashHideTimer);
+
+            modal.classList.remove('hidden', 'splash-fading-out');
+            modal.classList.add('flex');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    modal.classList.add('splash-visible');
+                });
+            });
+            splashAutoFadeTimer = setTimeout(() => fadeOutWelcomeSplash(), 2200);
+        }
+
+        function openWelcomeSplash() {
+            triggerInitialSplashFade();
+        }
+
+        function fadeOutWelcomeSplash() {
+            const modal = document.getElementById('welcome-splash-modal');
+            if (!modal || modal.classList.contains('hidden')) return;
+            clearTimeout(splashAutoFadeTimer);
+            clearTimeout(splashHideTimer);
+
+            modal.classList.remove('splash-visible');
+            modal.classList.add('splash-fading-out');
+            splashHideTimer = setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex', 'splash-fading-out');
+                maybeHandleInitialEntry();
+            }, 750);
+        }
+
+        // =====================================================================
+        // SSO UI AUTHENTICATION & ROLE-BASED ACCESS CONTROL (FLASK SESSION)
+        // =====================================================================
+        function isAsdos() {
+            return Boolean(currentUser && currentUser.role === 'asdos');
+        }
+
+        function openSsoLoginModal() {
+            const modal = document.getElementById('sso-login-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSsoLoginModal() {
+            const modal = document.getElementById('sso-login-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function quickFillSso(roleType) {
+            if (roleType === 'asdos') {
+                document.getElementById('sso-username').value = 'jonathan.tan';
+                document.getElementById('sso-password').value = 'fasilkom2026';
+            } else {
+                document.getElementById('sso-username').value = 'alya.zahra24';
+                document.getElementById('sso-password').value = 'fasilkom2026';
+            }
+        }
+
+        async function handleSsoLogin(event) {
+            event.preventDefault();
+            const rawUsername = document.getElementById('sso-username').value.trim().toLowerCase().replace('@ui.ac.id', '');
+            if (!rawUsername) return;
+
+            try {
+                const state = await apiRequest('/api/auth/login', { username: rawUsername });
+                applyServerState(state);
+                notifPanelOpen = !isAsdos() && notifications.some(n => !n.read);
+
+                closeSsoLoginModal();
+                updateAuthUI();
+                renderAll();
+
+                if (INITIAL_CUBBY && !initialCubbyOpened) {
+                    initialCubbyOpened = true;
+                    openCubbyDrawer(INITIAL_CUBBY);
+                }
+
+                showToast(
+                    `Login SSO UI Berhasil (${currentUser.role.toUpperCase()})`,
+                    isAsdos()
+                        ? `Selamat datang, ${currentUser.name}. Kamu memiliki akses Asdos untuk menaruh berkas ke rak.`
+                        : `Selamat datang, ${currentUser.name}. Mode Mahasiswa aktif (cek & ambil kuis).`
+                );
+            } catch (err) {
+                showToast('Login Gagal', err.message);
+            }
+        }
+
+        async function logoutSso() {
+            try {
+                const state = await apiRequest('/api/auth/logout', {});
+                applyServerState(state);
+                notifPanelOpen = false;
+                initialCubbyOpened = false;
+                closeCubbyDrawer();
+                closeInputModal();
+                closePickupModal();
+                updateAuthUI();
+                renderAll();
+                openSsoLoginModal();
+                showToast('Keluar dari SSO UI', 'Silakan login kembali dengan akun SSO UI.');
+            } catch (err) {
+                showToast('Gagal Keluar', err.message);
+            }
+        }
+
+        function updateAuthUI() {
+            const sessionBadge = document.getElementById('user-session-badge');
+            const notifBell = document.getElementById('btn-notif-bell');
+            const addBtn = document.getElementById('btn-add-rack-item');
+            const logoutBtn = document.getElementById('btn-logout-sso');
+            const drawerAddDesktop = document.getElementById('drawer-btn-add-cubby');
+            const drawerAddMobile = document.getElementById('drawer-btn-add-cubby-mobile');
+            const roleHint = document.getElementById('role-permission-hint');
+
+            if (!currentUser) {
+                sessionBadge.classList.add('hidden');
+                sessionBadge.classList.remove('flex');
+                notifBell.classList.add('hidden');
+                notifBell.classList.remove('inline-flex');
+                addBtn.classList.add('hidden');
+                addBtn.classList.remove('inline-flex');
+                logoutBtn.classList.add('hidden');
+                logoutBtn.classList.remove('inline-flex');
+                drawerAddDesktop.classList.add('hidden');
+                drawerAddDesktop.classList.remove('sm:inline-flex');
+                drawerAddMobile.classList.add('hidden');
+                drawerAddMobile.classList.remove('inline-flex');
+                roleHint.textContent = 'Belum Login SSO';
+                renderNotificationUI();
+                return;
+            }
+
+            sessionBadge.classList.remove('hidden');
+            sessionBadge.classList.add('flex');
+            notifBell.classList.remove('hidden');
+            notifBell.classList.add('inline-flex');
+            logoutBtn.classList.remove('hidden');
+            logoutBtn.classList.add('inline-flex');
+
+            document.getElementById('nav-user-name').textContent = currentUser.name;
+            document.getElementById('nav-user-npm').textContent = `${currentUser.npm} • ${currentUser.username}@ui.ac.id`;
+
+            const rolePill = document.getElementById('nav-user-role-pill');
+            if (isAsdos()) {
+                rolePill.textContent = 'ASDOS';
+                rolePill.className = 'px-2 py-0.5 text-[10px] font-logo font-bold bg-[#1D4ED8] text-white rounded-full';
+
+                addBtn.classList.remove('hidden');
+                addBtn.classList.add('inline-flex');
+
+                drawerAddDesktop.classList.remove('hidden');
+                drawerAddDesktop.classList.add('sm:inline-flex');
+                drawerAddMobile.classList.remove('hidden');
+                drawerAddMobile.classList.add('inline-flex', 'sm:hidden');
+
+                roleHint.textContent = 'Akses Asdos: Bisa Taruh & Cek Berkas';
+                populateTaClassDropdowns();
+            } else {
+                rolePill.textContent = 'MAHASISWA';
+                rolePill.className = 'px-2 py-0.5 text-[10px] font-logo font-bold bg-[#10B981] text-white rounded-full';
+
+                addBtn.classList.add('hidden');
+                addBtn.classList.remove('inline-flex');
+
+                drawerAddDesktop.classList.add('hidden');
+                drawerAddDesktop.classList.remove('sm:inline-flex');
+                drawerAddMobile.classList.add('hidden');
+                drawerAddMobile.classList.remove('inline-flex', 'sm:hidden');
+
+                roleHint.textContent = 'Akses Mahasiswa: Cek & Ambil Kuis Saja';
+            }
+            renderNotificationUI();
+        }
+
+        async function resetDemoData() {
+            try {
+                const res = await apiRequest('/api/reset', {});
+                applyServerState(res.state);
+                clearSearch();
+                closeCubbyDrawer();
+                updateAuthUI();
+                renderAll();
+                showToast('Data Direset', 'Isi lemari rak dan notifikasi dikembalikan ke kondisi awal.');
+            } catch (err) {
+                showToast('Gagal Reset Data', err.message);
+            }
+        }
+
+        function populateCubbyDropdowns() {
+            const ids = getAllCubbyIds();
+            const drawerSelect = document.getElementById('drawer-cubby-switcher');
+            const envRack = document.getElementById('env-rack');
+            const looseRack = document.getElementById('loose-rack');
+
+            const prevDrawer = drawerSelect ? drawerSelect.value : '';
+            const prevEnv = envRack ? envRack.value : '';
+            const prevLoose = looseRack ? looseRack.value : '';
+
+            const drawerHtml = ids.map(id => `<option value="${id}">Loker ${id}</option>`).join('');
+            const rackHtml = ids.map(id =>
+                `<option value="${id}">Loker ${id}${id === suggestedCubby ? ' (Paling Kosong)' : ''}</option>`
+            ).join('');
+
+            if (drawerSelect) {
+                drawerSelect.innerHTML = drawerHtml;
+                if (prevDrawer && ids.includes(prevDrawer)) drawerSelect.value = prevDrawer;
+            }
+            if (envRack) {
+                envRack.innerHTML = rackHtml;
+                envRack.value = (prevEnv && ids.includes(prevEnv)) ? prevEnv : suggestedCubby;
+            }
+            if (looseRack) {
+                looseRack.innerHTML = rackHtml;
+                looseRack.value = (prevLoose && ids.includes(prevLoose)) ? prevLoose : suggestedCubby;
+            }
+        }
+
+        // =====================================================================
+        // SEARCH HIGHLIGHTING
+        // =====================================================================
+        function setupSearchListener() {
+            const searchInput = document.getElementById('search-input');
+            const clearBtn = document.getElementById('clear-search-btn');
+            searchInput.addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                clearBtn.classList.toggle('hidden', val.length === 0);
+                renderAll();
+            });
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            renderAll();
+        }
+
+        function getSearchQuery() {
+            return document.getElementById('search-input').value.trim().toLowerCase();
+        }
+
+        function findMatchingCubbies() {
+            const q = getSearchQuery();
+            if (!q) return new Map();
+
+            const matchMap = new Map();
+            quizzes.forEach(quiz => {
+                if (quiz.status !== 'available') return;
+                const env = quiz.envelopeId ? envelopes.find(e => e.id === quiz.envelopeId) : null;
+                const envLabel = env ? env.label.toLowerCase() : '';
+                const matched =
+                    quiz.studentName.toLowerCase().includes(q) ||
+                    quiz.npm.includes(q) ||
+                    quiz.course.toLowerCase().includes(q) ||
+                    quiz.quizTitle.toLowerCase().includes(q) ||
+                    envLabel.includes(q);
+
+                if (matched) {
+                    if (!matchMap.has(quiz.cubby)) matchMap.set(quiz.cubby, []);
+                    matchMap.get(quiz.cubby).push(quiz);
+                }
+            });
+            return matchMap;
+        }
+
+        // =====================================================================
+        // RENDER ALL & PHYSICAL 3x5 BOOKSHELF
+        // =====================================================================
+        function renderAll() {
+            updateStats();
+            renderCartoonBookshelf();
+            renderNotificationUI();
+            if (activeCubbyId && !document.getElementById('cubby-drawer-modal').classList.contains('hidden')) {
+                renderCubbyDrawerContent();
+            }
+        }
+
+        function updateStats() {
+            const availableQuizzes = quizzes.filter(q => q.status === 'available');
+            const looseQuizzes = availableQuizzes.filter(q => !q.envelopeId);
+
+            document.getElementById('stat-envelopes').textContent =
+                stateLoaded ? currentStats.envelopes : envelopes.length;
+            document.getElementById('stat-loose').textContent =
+                stateLoaded ? currentStats.loose : looseQuizzes.length;
+            document.getElementById('stat-available').textContent =
+                stateLoaded ? currentStats.available : availableQuizzes.length;
+        }
+
+        function renderCartoonBookshelf() {
+            const container = document.getElementById('cartoon-rack-rows');
+            const searchMatches = findMatchingCubbies();
+            const q = getSearchQuery();
+
+            const banner = document.getElementById('search-match-banner');
+            const bannerText = document.getElementById('search-match-text');
+            const bannerBtns = document.getElementById('search-match-buttons');
+
+            if (q.length > 0) {
+                banner.classList.remove('hidden');
+                if (searchMatches.size > 0) {
+                    let totalFound = 0;
+                    searchMatches.forEach(arr => totalFound += arr.length);
+                    bannerText.innerHTML = `Ditemukan <strong class="underline">${totalFound} lembar kuis</strong> di <strong>${searchMatches.size} loker</strong>:`;
+                    bannerBtns.innerHTML = Array.from(searchMatches.entries()).map(([cubbyId, items]) => `
+                        <button onclick="openCubbyDrawer('${cubbyId}')" class="tactile-btn px-2.5 py-1 bg-white hover:bg-stone-100 text-stone-900 text-xs font-mono font-bold rounded cursor-pointer">
+                            Loker ${cubbyId} (${items.length}) &rarr;
+                        </button>
+                    `).join('');
+                } else {
+                    bannerText.innerHTML = `Tidak ditemukan kuis yang cocok untuk "<strong>${escapeHtml(q)}</strong>".`;
+                    bannerBtns.innerHTML = '';
+                }
+            } else {
+                banner.classList.add('hidden');
+            }
+
+            let rowsHtml = '';
+            ROWS.forEach(rowNum => {
+                rowsHtml += `
+                    <div class="flex items-stretch gap-2 sm:gap-3">
+                        <div class="w-7 sm:w-9 shrink-0 flex items-center justify-center bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-xl shadow-[0_3px_0_#0F172A]">
+                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">R${rowNum}</span>
+                        </div>
+                        <div class="flex-1 grid grid-cols-3 gap-2.5 sm:gap-4">
+                `;
+
+                COLUMNS.forEach(colChar => {
+                    const cubbyId = `${colChar}${rowNum}`;
+                    const cubbyEnvelopes = envelopes.filter(e => e.cubby === cubbyId);
+                    const cubbyLoose = quizzes.filter(qz => qz.cubby === cubbyId && !qz.envelopeId && qz.status === 'available');
+                    const matchedList = searchMatches.get(cubbyId) || [];
+                    const isHighlighted = matchedList.length > 0;
+
+                    const coursesInCubby = [...new Set([
+                        ...cubbyEnvelopes.map(e => e.course),
+                        ...cubbyLoose.map(qz => qz.course)
+                    ])];
+                    const courseSummary = coursesInCubby.length > 0 ? coursesInCubby.slice(0, 2).join(', ') : 'Kosong';
+
+                    rowsHtml += `
+                        <button type="button" onclick="openCubbyDrawer('${cubbyId}')"
+                            class="cubby-slot ${isHighlighted ? 'cubby-match-highlight' : ''} relative h-36 sm:h-42 flex flex-col justify-between p-2 sm:p-2.5 text-left focus:outline-none cursor-pointer group overflow-hidden">
+                            
+                            <!-- Top Cartoon Sticker Label & Count -->
+                            <div class="flex items-start justify-between gap-1 w-full z-10">
+                                <span class="tape-strip px-2 py-0.5 font-logo text-xs sm:text-sm font-bold text-stone-950">
+                                    ${cubbyId}
+                                </span>
+
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold border-2 border-stone-900 shadow-[0_2px_0_#1E1B18] ${
+                                    isHighlighted
+                                        ? 'bg-amber-300 text-stone-950'
+                                        : (cubbyEnvelopes.length + cubbyLoose.length > 0 ? 'bg-white text-stone-900' : 'bg-stone-200 text-stone-500 border-stone-700')
+                                }">
+                                    ${isHighlighted
+                                        ? `${matchedList.length} cocok`
+                                        : (cubbyEnvelopes.length + cubbyLoose.length === 0
+                                            ? 'Kosong'
+                                            : `${cubbyEnvelopes.length} amp${cubbyLoose.length > 0 ? ` • ${cubbyLoose.length} lps` : ''}`)}
+                                </span>
+                            </div>
+
+                            <!-- Center Stack Illustration (Cartoon Brown Manila Envelopes + Loose White Sheets) -->
+                            <div class="flex-1 w-full flex flex-col justify-end items-center px-1 pt-1 z-10">
+                                ${renderRealisticBrownEnvelopeStack(cubbyEnvelopes, cubbyLoose)}
+                            </div>
+
+                            <!-- Bottom Wooden Shelf Lip & Course Pill -->
+                            <div class="w-full pt-1.5 mt-1 border-t-2 border-stone-900/40 flex items-center justify-between gap-1 z-10">
+                                <span class="px-1.5 py-0.5 rounded-md bg-black/25 text-[10px] sm:text-[11px] font-extrabold text-[#FFFDF7] truncate">
+                                    ${escapeHtml(courseSummary)}
+                                </span>
+                                <span class="text-[10px] font-logo font-bold text-[#FEF08A] opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                                    Buka &rarr;
+                                </span>
+                            </div>
+                        </button>
+                    `;
+                });
+
+                rowsHtml += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = rowsHtml;
+        }
+
+        function renderRealisticBrownEnvelopeStack(cubbyEnvelopes, cubbyLoose) {
+            if (cubbyEnvelopes.length === 0 && cubbyLoose.length === 0) {
+                return `<div class="text-[11px] font-logo text-amber-100/60 mb-2">Kosong</div>`;
+            }
+
+            let html = `<div class="w-full max-w-[148px] flex flex-col-reverse items-center">`;
+
+            const visibleEnvs = cubbyEnvelopes.slice(0, 4);
+            visibleEnvs.forEach((env, idx) => {
+                const isYellow = env.folderType === 'Map Kuning';
+                const fillClass = isYellow ? 'bg-[#FDE047]' : (idx % 2 === 0 ? 'bg-[#E2AC76]' : 'bg-[#D3975C]');
+                const tiltClass = idx === 1 ? '-rotate-2' : (idx === 2 ? 'rotate-2' : '');
+                const widthClass = env.folderType === 'Amplop Cokelat Besar' ? 'w-full' : 'w-[92%]';
+
+                html += `
+                    <div class="${widthClass} h-4 sm:h-4.5 ${fillClass} border-2 border-stone-900 rounded-md ${tiltClass} -mt-0.5 flex items-center justify-between px-1.5 shadow-[0_2px_0_#1E1B18]">
+                        <span class="text-[8px] font-extrabold text-stone-950 truncate">${escapeHtml(env.course)}</span>
+                        <span class="w-3 h-1 rounded-full bg-stone-900/35 shrink-0"></span>
+                    </div>
+                `;
+            });
+
+            if (cubbyLoose.length > 0) {
+                const sheetsToDraw = Math.min(cubbyLoose.length, 3);
+                for (let s = 0; s < sheetsToDraw; s++) {
+                    const sheetTilt = s % 2 === 0 ? 'rotate-2' : '-rotate-2';
+                    html += `
+                        <div class="w-[82%] h-2.5 bg-white border-2 border-stone-900 rounded-sm ${sheetTilt} -mt-0.5 flex items-center px-1 shadow-[0_1px_0_#1E1B18]">
+                            <span class="w-1/2 h-[1.5px] bg-stone-400 rounded-full"></span>
+                        </div>
+                    `;
+                }
+            }
+
+            html += `</div>`;
+            return html;
+        }
+
+        // =====================================================================
+        // TWO-LEVEL CUBBY DRAWER VIEW
+        // =====================================================================
+        function openCubbyDrawer(cubbyId) {
+            if (!currentUser) {
+                openSsoLoginModal();
+                return;
+            }
+            activeCubbyId = cubbyId;
+            activeEnvelopeId = null;
+
+            const col = cubbyId.charAt(0);
+            const row = cubbyId.charAt(1);
+
+            document.getElementById('drawer-cubby-badge').textContent = cubbyId;
+            document.getElementById('drawer-title').textContent = `Isi Loker ${cubbyId}`;
+            document.getElementById('drawer-subtitle').textContent = `Kolom ${col} • Baris ${row}`;
+            document.getElementById('drawer-cubby-switcher').value = cubbyId;
+
+            renderCubbyDrawerContent();
+
+            const modal = document.getElementById('cubby-drawer-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function openEnvelopeInsideDrawer(envelopeId) {
+            activeEnvelopeId = envelopeId;
+            renderCubbyDrawerContent();
+        }
+
+        function backToCubbyOverview() {
+            activeEnvelopeId = null;
+            renderCubbyDrawerContent();
+        }
+
+        function closeCubbyDrawer() {
+            activeCubbyId = null;
+            activeEnvelopeId = null;
+            const modal = document.getElementById('cubby-drawer-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function renderCubbyDrawerContent() {
+            if (!activeCubbyId) return;
+
+            const cubbyEnvelopes = envelopes.filter(e => e.cubby === activeCubbyId);
+            const cubbyLoose = quizzes.filter(q => q.cubby === activeCubbyId && !q.envelopeId);
+            const breadcrumbEl = document.getElementById('drawer-breadcrumb');
+            const bodyEl = document.getElementById('drawer-body-container');
+            const footerHint = document.getElementById('drawer-footer-hint');
+
+            document.getElementById('drawer-count-pill').textContent =
+                `${cubbyEnvelopes.length} Amplop • ${cubbyLoose.filter(q => q.status === 'available').length} Kertas Lepas`;
+
+            // TIER 2: INSIDE SPECIFIC BROWN ENVELOPE
+            if (activeEnvelopeId) {
+                const env = envelopes.find(e => e.id === activeEnvelopeId);
+                if (!env) {
+                    activeEnvelopeId = null;
+                    renderCubbyDrawerContent();
+                    return;
+                }
+
+                const insideQuizzes = quizzes.filter(q => q.envelopeId === env.id);
+                const availableInside = insideQuizzes.filter(q => q.status === 'available').length;
+
+                breadcrumbEl.innerHTML = `
+                    <button type="button" onclick="backToCubbyOverview()" class="text-[#2E2B85] hover:underline flex items-center gap-1 cursor-pointer">
+                        &larr; Loker ${activeCubbyId}
+                    </button>
+                    <span class="text-stone-400">/</span>
+                    <span class="text-stone-900 truncate max-w-[240px] sm:max-w-md">${escapeHtml(env.label)}</span>
+                `;
+
+                footerHint.textContent = 'Pastikan nama & NPM sesuai sebelum mengambil kertas dari amplop cokelat.';
+
+                let html = `
+                    <div class="bg-[#E8C5A0]/50 border-[1.5px] border-stone-900 rounded-md p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 bg-stone-900 text-white text-[11px] font-mono font-bold rounded-xs">${escapeHtml(env.course)}</span>
+                                <span class="text-xs font-mono text-stone-700">${escapeHtml(env.folderType)}</span>
+                            </div>
+                            <h4 class="text-base sm:text-lg font-extrabold text-stone-900">${escapeHtml(env.label)}</h4>
+                            <p class="text-xs text-stone-700 mt-0.5">Penyetor: ${escapeHtml(env.placedBy)} • ${escapeHtml(env.dateAdded)}</p>
+                        </div>
+                        <div class="bg-white border-[1.5px] border-stone-900 rounded px-3 py-2 text-center shrink-0">
+                            <span class="block text-[10px] font-mono font-bold text-stone-500">SISA DI AMPLOP</span>
+                            <span class="font-mono text-lg font-bold text-stone-900">${availableInside} / ${insideQuizzes.length}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-stone-600 mb-2.5">
+                            Daftar Nama Mahasiswa di Dalam Amplop (${insideQuizzes.length})
+                        </h5>
+                `;
+
+                if (insideQuizzes.length === 0) {
+                    html += `<p class="text-xs text-stone-500 bg-white border border-stone-300 rounded p-4 text-center">Belum ada nama tercatat di dalam amplop ini.</p>`;
+                } else {
+                    html += `<div class="space-y-2">`;
+                    insideQuizzes.forEach(q => {
+                        html += renderQuizStudentRow(q);
+                    });
+                    html += `</div>`;
+                }
+                html += `</div>`;
+                bodyEl.innerHTML = html;
+                return;
+            }
+
+            // TIER 1: CUBBY OVERVIEW
+            breadcrumbEl.innerHTML = `
+                <span class="text-stone-900">Loker ${activeCubbyId} (Daftar Amplop Cokelat & Sisa Kertas Lepas)</span>
+            `;
+            footerHint.textContent = 'Klik amplop cokelat untuk melihat daftar nama mahasiswa di dalamnya.';
+
+            let html = `
+                <div>
+                    <div class="flex items-center justify-between mb-2.5">
+                        <h4 class="text-xs font-mono font-bold uppercase tracking-wider text-stone-700">
+                            1. Berkas Amplop Cokelat (${cubbyEnvelopes.length})
+                        </h4>
+                        <span class="text-[11px] text-stone-500">Klik amplop untuk buka isi</span>
+                    </div>
+            `;
+
+            if (cubbyEnvelopes.length === 0) {
+                html += `
+                    <div class="bg-white border border-dashed border-stone-400 rounded-md p-5 text-center text-xs text-stone-500">
+                        Tidak ada amplop cokelat di Loker ${activeCubbyId}.
+                    </div>
+                `;
+            } else {
+                html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">`;
+                cubbyEnvelopes.forEach(env => {
+                    const inside = quizzes.filter(q => q.envelopeId === env.id);
+                    const unclaimedInside = inside.filter(q => q.status === 'available');
+                    const isYellow = env.folderType === 'Map Kuning';
+                    const previewNames = unclaimedInside.slice(0, 2).map(q => q.studentName.split(' ')[0]).join(', ');
+                    const moreCount = unclaimedInside.length > 2 ? ` +${unclaimedInside.length - 2} lainnya` : '';
+
+                    html += `
+                        <button type="button" onclick="openEnvelopeInsideDrawer('${env.id}')"
+                            class="${isYellow ? 'bg-[#FEF08A] hover:bg-amber-200 border-[2.5px] border-stone-900 rounded-2xl shadow-[0_4px_0_#1E1B18]' : 'manila-card'} p-3.5 text-left flex flex-col justify-between gap-2.5 cursor-pointer group">
+                            <div class="flex items-center justify-between gap-2 w-full">
+                                <span class="px-2.5 py-0.5 bg-stone-900 text-white text-[10px] font-extrabold rounded-full">
+                                    ${escapeHtml(env.course)}
+                                </span>
+                                <span class="px-2.5 py-0.5 bg-white border-2 border-stone-900 text-stone-900 text-[10px] font-extrabold rounded-full">
+                                    ${unclaimedInside.length} sisa lembar
+                                </span>
+                            </div>
+
+                            <div>
+                                <h5 class="text-sm font-extrabold text-stone-950 leading-snug group-hover:underline">
+                                    ${escapeHtml(env.label)}
+                                </h5>
+                                <p class="text-[11px] font-medium text-stone-800 mt-1">
+                                    ${unclaimedInside.length > 0
+                                        ? `Isi: ${escapeHtml(previewNames)}${moreCount}`
+                                        : 'Semua kuis di amplop ini sudah diambil'}
+                                </p>
+                                ${env.placedBy ? `<p class="text-[10px] font-mono font-bold text-stone-700 mt-1">Penyetor: ${escapeHtml(env.placedBy)}</p>` : ''}
+                            </div>
+
+                            <div class="pt-2 border-t-2 border-stone-900/20 flex items-center justify-between w-full text-[11px] font-extrabold text-stone-900">
+                                <span>${escapeHtml(env.folderType)}</span>
+                                <span>Buka &rarr;</span>
+                            </div>
+                        </button>
+                    `;
+                });
+                html += `</div>`;
+            }
+            html += `</div>`;
+
+            // Section 2: Loose Papers
+            html += `
+                <div class="pt-4 border-t border-stone-300">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <h4 class="text-xs font-mono font-bold uppercase tracking-wider text-stone-700">
+                            2. Sisa Kertas Lepas — Tanpa Amplop (${cubbyLoose.length})
+                        </h4>
+                        <span class="text-[11px] text-stone-500">Kertas yang amplopnya sudah sobek/hilang</span>
+                    </div>
+            `;
+
+            if (cubbyLoose.length === 0) {
+                html += `
+                    <div class="bg-white border border-dashed border-stone-400 rounded-md p-4 text-center text-xs text-stone-500">
+                        Tidak ada sisa kertas lepas di Loker ${activeCubbyId}.
+                    </div>
+                `;
+            } else {
+                html += `<div class="space-y-2">`;
+                cubbyLoose.forEach(q => {
+                    html += renderQuizStudentRow(q);
+                });
+                html += `</div>`;
+            }
+            html += `</div>`;
+
+            bodyEl.innerHTML = html;
+        }
+
+        function renderQuizStudentRow(q) {
+            const isAvailable = q.status === 'available';
+            const query = getSearchQuery();
+            const isMatched = query.length > 0 && (
+                q.studentName.toLowerCase().includes(query) ||
+                q.npm.includes(query) ||
+                q.course.toLowerCase().includes(query)
+            );
+
+            return `
+                <div class="p-3 bg-white border-2 ${isMatched ? 'border-amber-500 bg-amber-50' : 'border-stone-900'} rounded-2xl shadow-[0_3px_0_#1E1B18] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${!isAvailable ? 'opacity-65 bg-stone-100' : ''}">
+                    <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                            <span class="font-mono text-xs font-bold text-stone-900 bg-[#FFFDF7] border border-stone-900 px-2 py-0.5 rounded-lg">${q.npm}</span>
+                            <span class="text-xs font-bold text-stone-600">${escapeHtml(q.course)} &bull; ${escapeHtml(q.quizTitle)}</span>
+                            ${isMatched ? `<span class="px-2 py-0.5 text-[10px] font-extrabold bg-[#FEF08A] border border-stone-900 text-stone-950 rounded-full">COCOK</span>` : ''}
+                        </div>
+                        <p class="font-extrabold text-stone-900 text-sm truncate">${escapeHtml(q.studentName)}</p>
+                        ${!isAvailable ? `
+                            <p class="text-[11px] text-emerald-700 font-bold mt-0.5">
+                                Diambil oleh ${escapeHtml(q.pickedUpBy)} (${q.pickedUpAt})
+                            </p>
+                        ` : ''}
+                    </div>
+
+                    <div class="shrink-0 flex items-center justify-end">
+                        ${isAvailable ? `
+                            <button onclick="openPickupModal('${q.id}')" class="tactile-btn px-3.5 py-1.5 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white text-xs font-extrabold cursor-pointer">
+                                Ambil Kuis
+                            </button>
+                        ` : `
+                            <span class="px-2.5 py-1 bg-slate-200 border-2 border-slate-400 text-slate-700 text-[11px] font-extrabold rounded-full">
+                                Sudah Diambil
+                            </span>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function openInputForCurrentCubby() {
+            if (!isAsdos()) {
+                showToast('Akses Ditolak', 'Hanya akun SSO Asdos yang diizinkan menaruh berkas ke rak.');
+                return;
+            }
+            const targetCubby = activeCubbyId || suggestedCubby || 'A1';
+            openInputModal('envelope');
+            document.getElementById('env-rack').value = targetCubby;
+            document.getElementById('loose-rack').value = targetCubby;
+        }
+
+        // =====================================================================
+        // PICKUP MODAL & ACTION
+        // =====================================================================
+        function openPickupModal(quizId) {
+            if (!currentUser) {
+                openSsoLoginModal();
+                return;
+            }
+            const quiz = quizzes.find(q => q.id === quizId);
+            if (!quiz) return;
+
+            const env = quiz.envelopeId ? envelopes.find(e => e.id === quiz.envelopeId) : null;
+            const containerSource = env ? env.label : 'Kertas Lepas (Tanpa Amplop)';
+
+            document.getElementById('pickup-quiz-id').value = quiz.id;
+            document.getElementById('pickup-rack-badge').textContent = `Loker ${quiz.cubby} • ${env ? env.folderType : 'Kertas Lepas'}`;
+            document.getElementById('pickup-npm-display').textContent = `NPM: ${quiz.npm}`;
+            document.getElementById('pickup-student-name').textContent = quiz.studentName;
+            document.getElementById('pickup-course-info').textContent = `${containerSource} — ${quiz.quizTitle}`;
+            document.getElementById('pickup-verifier').value = `${currentUser.npm} (${currentUser.name})`;
+            document.getElementById('pickup-sso-recorder-note').textContent = `Tercatat via SSO: ${currentUser.username}@ui.ac.id`;
+
+            const modal = document.getElementById('pickup-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closePickupModal() {
+            const modal = document.getElementById('pickup-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function confirmPickup(event) {
+            event.preventDefault();
+            const quizId = document.getElementById('pickup-quiz-id').value;
+            const verifier = document.getElementById('pickup-verifier').value.trim();
+            if (!verifier) return;
+
+            try {
+                const res = await apiRequest(`/api/quizzes/${encodeURIComponent(quizId)}/pickup`, { verifier });
+                applyServerState(res.state);
+                closePickupModal();
+                renderAll();
+                showToast('Kuis Diambil', `Kuis milik ${res.quiz.studentName} di Loker ${res.quiz.cubby} ditandai sudah diambil.`);
+            } catch (err) {
+                showToast('Gagal Mengambil Kuis', err.message);
+            }
+        }
+
+        // =====================================================================
+        // INPUT MODAL: TA CLASS DROPDOWN & MARKED STUDENT CHECKLIST
+        // =====================================================================
+        function getAssignedClassesForCurrentUser() {
+            if (!isAsdos()) return [];
+            const allIds = Object.keys(classRosters);
+            const ids = Array.isArray(currentUser.assignedClasses) && currentUser.assignedClasses.length > 0
+                ? currentUser.assignedClasses
+                : allIds;
+            return ids.map(id => classRosters[id]).filter(Boolean);
+        }
+
+        function populateTaClassDropdowns() {
+            const assigned = getAssignedClassesForCurrentUser();
+            const envClassSelect = document.getElementById('env-class');
+            const looseClassSelect = document.getElementById('loose-class');
+            const subtitleEl = document.getElementById('input-modal-ta-subtitle');
+
+            if (subtitleEl && currentUser) {
+                subtitleEl.textContent = `Asdos: ${currentUser.name} • Pilih kelas & centang mahasiswa yang kuisnya sudah dinilai`;
+            }
+
+            const optionsHtml = assigned.map(cls =>
+                `<option value="${cls.id}">${escapeHtml(cls.label)} (${cls.students.length} mhs)</option>`
+            ).join('');
+
+            if (envClassSelect) {
+                const prev = envClassSelect.value;
+                envClassSelect.innerHTML = optionsHtml;
+                if (prev && assigned.some(c => c.id === prev)) {
+                    envClassSelect.value = prev;
+                }
+                onEnvClassChange();
+            }
+
+            if (looseClassSelect) {
+                const prevLoose = looseClassSelect.value;
+                looseClassSelect.innerHTML = optionsHtml;
+                if (prevLoose && assigned.some(c => c.id === prevLoose)) {
+                    looseClassSelect.value = prevLoose;
+                }
+                onLooseClassChange();
+            }
+        }
+
+        function onEnvClassChange() {
+            const classId = document.getElementById('env-class')?.value;
+            const roster = classRosters[classId];
+            selectedStudentNpms = new Set(roster ? roster.students.map(s => s.npm) : []);
+
+            const filterInput = document.getElementById('env-student-filter');
+            if (filterInput) filterInput.value = '';
+
+            renderEnvStudentChecklist();
+        }
+
+        function renderEnvStudentChecklist() {
+            const classId = document.getElementById('env-class')?.value;
+            const roster = classRosters[classId];
+            const container = document.getElementById('env-student-checklist');
+            if (!container) return;
+
+            if (!roster || roster.students.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Tidak ada daftar mahasiswa pada kelas ini.</p>`;
+                updateEnvChecklistSummary();
+                return;
+            }
+
+            const filterVal = (document.getElementById('env-student-filter')?.value || '').trim().toLowerCase();
+            const filteredStudents = roster.students.filter(s =>
+                !filterVal ||
+                s.name.toLowerCase().includes(filterVal) ||
+                s.npm.includes(filterVal)
+            );
+
+            if (filteredStudents.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Tidak ditemukan mahasiswa yang cocok dengan "${escapeHtml(filterVal)}".</p>`;
+                updateEnvChecklistSummary();
+                return;
+            }
+
+            container.innerHTML = filteredStudents.map(student => {
+                const isChecked = selectedStudentNpms.has(student.npm);
+                return `
+                    <label class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl border-2 cursor-pointer transition-colors select-none ${
+                        isChecked
+                            ? 'bg-white border-slate-900 shadow-[0_2px_0_#0F172A]'
+                            : 'bg-slate-100/80 border-slate-300 opacity-75 hover:opacity-100'
+                    }">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''}
+                                onchange="toggleEnvStudent('${student.npm}', this.checked)"
+                                class="w-4 h-4 accent-[#1D4ED8] rounded shrink-0 cursor-pointer">
+                            <div class="min-w-0">
+                                <p class="text-xs font-extrabold text-slate-900 truncate">${escapeHtml(student.name)}</p>
+                                <p class="text-[10px] font-mono font-semibold text-slate-500">${student.npm} &bull; ${escapeHtml(student.username)}@ui.ac.id</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 text-[10px] font-extrabold rounded-full border shrink-0 ${
+                            isChecked
+                                ? 'bg-[#D1FAE5] text-[#065F46] border-slate-900'
+                                : 'bg-slate-200 text-slate-600 border-slate-400'
+                        }">
+                            ${isChecked ? 'Dinilai' : 'Lewati'}
+                        </span>
+                    </label>
+                `;
+            }).join('');
+
+            updateEnvChecklistSummary();
+        }
+
+        function toggleEnvStudent(npm, checked) {
+            if (checked) {
+                selectedStudentNpms.add(npm);
+            } else {
+                selectedStudentNpms.delete(npm);
+            }
+            renderEnvStudentChecklist();
+        }
+
+        function setAllEnvStudents(checked) {
+            const classId = document.getElementById('env-class')?.value;
+            const roster = classRosters[classId];
+            if (!roster) return;
+
+            const filterVal = (document.getElementById('env-student-filter')?.value || '').trim().toLowerCase();
+            const targetStudents = roster.students.filter(s =>
+                !filterVal ||
+                s.name.toLowerCase().includes(filterVal) ||
+                s.npm.includes(filterVal)
+            );
+
+            targetStudents.forEach(s => {
+                if (checked) selectedStudentNpms.add(s.npm);
+                else selectedStudentNpms.delete(s.npm);
+            });
+            renderEnvStudentChecklist();
+        }
+
+        function updateEnvChecklistSummary() {
+            const classId = document.getElementById('env-class')?.value;
+            const roster = classRosters[classId];
+            const total = roster ? roster.students.length : 0;
+            const count = selectedStudentNpms.size;
+
+            const badge = document.getElementById('env-checklist-count');
+            if (badge) {
+                badge.textContent = `${count} / ${total} dinilai`;
+                badge.className = count > 0
+                    ? 'px-2.5 py-0.5 bg-[#D1FAE5] text-[#065F46] border-2 border-slate-900 rounded-full text-[11px] font-mono font-bold shrink-0'
+                    : 'px-2.5 py-0.5 bg-[#FFEDD5] text-[#9A3412] border-2 border-slate-900 rounded-full text-[11px] font-mono font-bold shrink-0';
+            }
+
+            const submitBtn = document.getElementById('env-submit-btn');
+            const notifyEnabled = document.getElementById('env-notify-enabled')?.checked;
+            if (submitBtn) {
+                submitBtn.textContent = notifyEnabled
+                    ? `Simpan Amplop & Notifikasi (${count})`
+                    : `Simpan Amplop ke Loker (${count})`;
+            }
+        }
+
+        function toggleNotifyChannelChips() {
+            const enabled = document.getElementById('env-notify-enabled')?.checked;
+            const chips = document.getElementById('env-notify-channels');
+            if (chips) {
+                chips.classList.toggle('opacity-40', !enabled);
+                chips.classList.toggle('pointer-events-none', !enabled);
+            }
+            updateEnvChecklistSummary();
+        }
+
+        function getSelectedNotifyChannels() {
+            const channels = [];
+            if (document.getElementById('notif-ch-web')?.checked) channels.push('Inbox Web');
+            if (document.getElementById('notif-ch-email')?.checked) channels.push('Email @ui.ac.id');
+            if (document.getElementById('notif-ch-chat')?.checked) channels.push('Telegram/Discord');
+            return channels.length > 0 ? channels : ['Inbox Web'];
+        }
+
+        function onLooseClassChange() {
+            const classId = document.getElementById('loose-class')?.value;
+            const roster = classRosters[classId];
+            const studentSelect = document.getElementById('loose-student');
+            if (!studentSelect) return;
+
+            const students = roster ? roster.students : [];
+            const opts = students.map(s =>
+                `<option value="${s.npm}">${escapeHtml(s.name)} (${s.npm})</option>`
+            );
+            opts.push(`<option value="__manual__">+ Input Manual (Di luar daftar)</option>`);
+            studentSelect.innerHTML = opts.join('');
+            onLooseStudentChange();
+        }
+
+        function onLooseStudentChange() {
+            const val = document.getElementById('loose-student')?.value;
+            const manualBox = document.getElementById('loose-manual-fields');
+            const nameInput = document.getElementById('loose-name');
+            const npmInput = document.getElementById('loose-npm');
+            const isManual = val === '__manual__';
+
+            if (manualBox) {
+                manualBox.classList.toggle('hidden', !isManual);
+                manualBox.classList.toggle('grid', isManual);
+            }
+            if (nameInput) nameInput.required = isManual;
+            if (npmInput) npmInput.required = isManual;
+        }
+
+        function openInputModal(tab = 'envelope') {
+            if (!currentUser) {
+                openSsoLoginModal();
+                return;
+            }
+            if (!isAsdos()) {
+                showToast('Akses Khusus Asdos', 'Hanya akun SSO Asdos yang dapat menaruh amplop atau kertas kuis ke rak.');
+                return;
+            }
+            populateTaClassDropdowns();
+            toggleNotifyChannelChips();
+            switchInputTab(tab);
+
+            if (suggestedCubby) {
+                const envRack = document.getElementById('env-rack');
+                const looseRack = document.getElementById('loose-rack');
+                if (envRack) envRack.value = suggestedCubby;
+                if (looseRack) looseRack.value = suggestedCubby;
+            }
+
+            const modal = document.getElementById('input-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeInputModal() {
+            const modal = document.getElementById('input-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function switchInputTab(tab) {
+            const envForm = document.getElementById('envelope-input-form');
+            const looseForm = document.getElementById('loose-input-form');
+            const tabEnv = document.getElementById('tab-envelope');
+            const tabLoose = document.getElementById('tab-loose');
+
+            const activeCls = 'px-3.5 py-1.5 text-xs font-extrabold rounded-t-xl border-t-2 border-x-2 border-slate-900 bg-white text-[#1D4ED8] -mb-0.5 cursor-pointer';
+            const inactiveCls = 'px-3.5 py-1.5 text-xs font-extrabold rounded-t-xl text-slate-600 hover:text-slate-900 cursor-pointer';
+
+            if (tab === 'envelope') {
+                envForm.classList.remove('hidden');
+                looseForm.classList.add('hidden');
+                tabEnv.className = activeCls;
+                tabLoose.className = inactiveCls;
+            } else {
+                envForm.classList.add('hidden');
+                looseForm.classList.remove('hidden');
+                tabLoose.className = activeCls;
+                tabEnv.className = inactiveCls;
+            }
+        }
+
+        async function handleEnvelopeSubmit(event) {
+            event.preventDefault();
+            if (!isAsdos()) {
+                showToast('Akses Ditolak', 'Hanya akun SSO Asdos yang dapat menaruh berkas.');
+                return;
+            }
+
+            const classId = document.getElementById('env-class').value;
+            const roster = classRosters[classId];
+            if (!roster) return;
+
+            const quizName = document.getElementById('env-label').value.trim();
+            const cubby = document.getElementById('env-rack').value;
+            const folderType = document.getElementById('env-folder').value;
+            const notifyEnabled = document.getElementById('env-notify-enabled').checked;
+            const channels = notifyEnabled ? getSelectedNotifyChannels() : [];
+            const selectedNpms = Array.from(selectedStudentNpms);
+
+            if (selectedNpms.length === 0) {
+                showToast('Belum Ada Mahasiswa Dicentang', 'Centang minimal 1 mahasiswa yang kuisnya sudah dinilai.');
+                return;
+            }
+
+            try {
+                const res = await apiRequest('/api/envelopes', {
+                    classId,
+                    quizName,
+                    cubby,
+                    folderType,
+                    selectedNpms,
+                    notifyEnabled,
+                    channels
+                });
+                applyServerState(res.state);
+
+                document.getElementById('env-label').value = '';
+                document.getElementById('env-student-filter').value = '';
+                closeInputModal();
+                renderAll();
+
+                const notifSummary = notifyEnabled
+                    ? ` • Notif terkirim via ${channels.join(', ')}.`
+                    : '';
+                const skippedSummary = res.skippedCount > 0 ? ` (${res.skippedCount} dilewati)` : '';
+
+                showToast(
+                    `${folderType} Ditaruh di Loker ${cubby}`,
+                    `${roster.label} — ${res.addedCount} kuis dinilai${skippedSummary}${notifSummary}`
+                );
+            } catch (err) {
+                showToast('Gagal Menyimpan Amplop', err.message);
+            }
+        }
+
+        async function handleLooseSubmit(event) {
+            event.preventDefault();
+            if (!isAsdos()) {
+                showToast('Akses Ditolak', 'Hanya akun SSO Asdos yang dapat menaruh kertas kuis.');
+                return;
+            }
+
+            const classId = document.getElementById('loose-class').value;
+            const selectedNpm = document.getElementById('loose-student').value;
+            const manualName = document.getElementById('loose-name').value.trim();
+            const manualNpm = document.getElementById('loose-npm').value.trim();
+            const quizTitle = document.getElementById('loose-title').value.trim();
+            const cubby = document.getElementById('loose-rack').value;
+            const notifyEnabled = document.getElementById('loose-notify-enabled').checked;
+
+            try {
+                const res = await apiRequest('/api/loose', {
+                    classId,
+                    selectedNpm,
+                    manualName,
+                    manualNpm,
+                    quizTitle,
+                    cubby,
+                    notifyEnabled,
+                    channels: ['Inbox Web', 'Email @ui.ac.id']
+                });
+                applyServerState(res.state);
+
+                document.getElementById('loose-title').value = '';
+                document.getElementById('loose-name').value = '';
+                document.getElementById('loose-npm').value = '';
+                closeInputModal();
+                renderAll();
+
+                showToast(
+                    'Kertas Lepas Ditambahkan',
+                    `Kuis ${res.quiz.studentName} (${res.quiz.course}) ditaruh di Loker ${cubby}${notifyEnabled ? ' • Notif terkirim.' : '.'}`
+                );
+            } catch (err) {
+                showToast('Gagal Menyimpan Kertas Lepas', err.message);
+            }
+        }
+
+        // =====================================================================
+        // NOTIFICATION INBOX (STUDENT ALERTS & TA DISPATCH LOG)
+        // =====================================================================
+        function getRelevantNotifications() {
+            if (!currentUser) return [];
+            if (isAsdos()) {
+                return notifications.filter(n => n.senderName === currentUser.name);
+            }
+            return notifications.filter(n => n.recipientNpm === currentUser.npm);
+        }
+
+        function toggleNotificationPanel(forceState) {
+            if (typeof forceState === 'boolean') {
+                notifPanelOpen = forceState;
+            } else {
+                notifPanelOpen = !notifPanelOpen;
+            }
+            renderNotificationUI();
+        }
+
+        async function markNotificationRead(notifId) {
+            try {
+                const res = await apiRequest(`/api/notifications/${encodeURIComponent(notifId)}/read`, {});
+                applyServerState(res.state);
+                renderNotificationUI();
+            } catch (err) {
+                showToast('Gagal Memperbarui Notifikasi', err.message);
+            }
+        }
+
+        async function markAllNotificationsRead() {
+            if (!currentUser || isAsdos()) return;
+            try {
+                const res = await apiRequest('/api/notifications/read-all', {});
+                applyServerState(res.state);
+                renderNotificationUI();
+            } catch (err) {
+                showToast('Gagal Memperbarui Notifikasi', err.message);
+            }
+        }
+
+        function openCubbyFromNotification(notifId, cubbyId, envelopeId) {
+            markNotificationRead(notifId);
+            openCubbyDrawer(cubbyId);
+            if (envelopeId && envelopes.some(e => e.id === envelopeId)) {
+                openEnvelopeInsideDrawer(envelopeId);
+            }
+        }
+
+        function renderNotificationUI() {
+            const panel = document.getElementById('student-notif-panel');
+            const listEl = document.getElementById('notif-panel-list');
+            const titleEl = document.getElementById('notif-panel-title');
+            const badgeEl = document.getElementById('notif-badge-count');
+            const markAllBtn = document.getElementById('btn-mark-all-read');
+            if (!panel || !listEl || !badgeEl) return;
+
+            if (!currentUser) {
+                panel.classList.add('hidden');
+                badgeEl.classList.add('hidden');
+                return;
+            }
+
+            const relevant = getRelevantNotifications();
+            const unreadCount = isAsdos() ? relevant.length : relevant.filter(n => !n.read).length;
+
+            if (unreadCount > 0) {
+                badgeEl.textContent = unreadCount;
+                badgeEl.classList.remove('hidden');
+            } else {
+                badgeEl.classList.add('hidden');
+            }
+
+            if (titleEl) {
+                titleEl.textContent = isAsdos()
+                    ? `Riwayat Notifikasi Terkirim (${relevant.length})`
+                    : `Notifikasi Kuis Kamu (${unreadCount} baru)`;
+            }
+
+            if (markAllBtn) {
+                markAllBtn.classList.toggle('hidden', isAsdos() || unreadCount === 0);
+            }
+
+            if (!notifPanelOpen) {
+                panel.classList.add('hidden');
+                return;
+            }
+
+            panel.classList.remove('hidden');
+            if (relevant.length === 0) {
+                listEl.innerHTML = `
+                    <div class="bg-white border-2 border-dashed border-slate-400 rounded-2xl p-4 text-center text-xs font-medium text-slate-500">
+                        ${isAsdos()
+                            ? 'Belum ada notifikasi yang kamu kirimkan ke mahasiswa.'
+                            : 'Belum ada notifikasi kuis baru untuk NPM kamu.'}
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = relevant.slice(0, 12).map(n => {
+                const channelsHtml = (n.channels || ['Inbox Web']).map(ch =>
+                    `<span class="px-1.5 py-0.5 bg-blue-50 border border-slate-900 rounded-md text-[10px] font-bold text-[#1D4ED8]">${escapeHtml(ch)}</span>`
+                ).join('');
+
+                if (isAsdos()) {
+                    return `
+                        <div class="bg-white border-2 border-slate-900 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-[0_3px_0_#0F172A]">
+                            <div class="min-w-0">
+                                <div class="flex flex-wrap items-center gap-1.5 mb-0.5">
+                                    <span class="px-2 py-0.5 bg-[#DBEAFE] text-[#1D4ED8] border border-slate-900 rounded-full text-[10px] font-logo font-bold">Loker ${escapeHtml(n.cubby)}</span>
+                                    <span class="text-xs font-extrabold text-slate-900">${escapeHtml(n.recipientName)}</span>
+                                    <span class="text-[10px] font-mono text-slate-500">(${escapeHtml(n.recipientNpm)})</span>
+                                </div>
+                                <p class="text-xs font-semibold text-slate-700">${escapeHtml(n.course)} ${escapeHtml(n.className || '')} &bull; ${escapeHtml(n.quizTitle)}</p>
+                                <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                                    ${channelsHtml}
+                                    <span class="text-[10px] font-mono text-slate-500">${escapeHtml(n.dateAdded)}</span>
+                                </div>
+                            </div>
+                            <button type="button" onclick="openCubbyFromNotification('${n.id}', '${n.cubby}', '${n.envelopeId || ''}')"
+                                class="tactile-btn px-3 py-1 bg-white hover:bg-blue-50 text-slate-900 text-[11px] font-extrabold shrink-0 cursor-pointer">
+                                Lihat Loker ${escapeHtml(n.cubby)} &rarr;
+                            </button>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="bg-white border-2 ${n.read ? 'border-slate-400 opacity-75' : 'border-slate-900 shadow-[0_3px_0_#0F172A]'} rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-1.5 mb-0.5">
+                                ${!n.read ? `<span class="px-2 py-0.5 bg-[#EA580C] text-white text-[10px] font-logo font-bold rounded-full">BARU</span>` : ''}
+                                <span class="px-2 py-0.5 bg-[#D1FAE5] text-[#065F46] border border-slate-900 rounded-full text-[10px] font-logo font-bold">Loker ${escapeHtml(n.cubby)}</span>
+                                <span class="text-xs font-extrabold text-slate-900">${escapeHtml(n.course)} ${escapeHtml(n.className || '')}</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-800">
+                                Kuis "${escapeHtml(n.quizTitle)}" kamu sudah dinilai dan ditaruh di <strong>Loker ${escapeHtml(n.cubby)}</strong> oleh ${escapeHtml(n.senderName)}.
+                            </p>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                                ${channelsHtml}
+                                <span class="text-[10px] font-mono text-slate-500">${escapeHtml(n.dateAdded)}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button type="button" onclick="openCubbyFromNotification('${n.id}', '${n.cubby}', '${n.envelopeId || ''}')"
+                                class="tactile-btn px-3 py-1.5 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white text-[11px] font-extrabold cursor-pointer">
+                                Buka Loker ${escapeHtml(n.cubby)} &rarr;
+                            </button>
+                            ${!n.read ? `
+                                <button type="button" onclick="markNotificationRead('${n.id}')"
+                                    class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 border-2 border-slate-900 rounded-xl text-[11px] font-bold text-slate-800 cursor-pointer">
+                                    Dibaca
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // =====================================================================
+        // HELPERS & TOAST
+        // =====================================================================
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function showToast(title, message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto bg-white border-[2.5px] border-stone-900 rounded-2xl p-3.5 shadow-[0_5px_0_#1E1B18] transition-all duration-300';
+            toast.innerHTML = `
+                <p class="font-logo text-xs font-bold text-stone-900">${escapeHtml(title)}</p>
+                <p class="text-[11px] font-medium text-stone-600 mt-0.5 leading-snug">${escapeHtml(message)}</p>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 250);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
