@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from models import ClassRoster, Envelope, QuizRecord, Student
+from models import ClassRoster, Envelope, QuizRecord, Student, get_all_cubby_ids
 
 DATA_DIR = Path(__file__).parent / "data"
 DATA_FILE = DATA_DIR / "store.json"
@@ -100,69 +100,74 @@ INITIAL_CLASS_ROSTERS: dict[str, dict] = {
 }
 
 INITIAL_ENVELOPES: list[dict] = [
+    # Baris A (A1, A2, A3)
     {"id": "env-a1-1", "cubby": "A1", "course": "DDP 1", "label": "Amplop Cokelat - DDP 1 Kelas A (Kuis 1)", "folderType": "Amplop Cokelat", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "20 Nov, 14:20"},
     {"id": "env-a1-2", "cubby": "A1", "course": "DDP 1", "label": "Amplop Cokelat - DDP 1 Kelas B (Kuis 2)", "folderType": "Amplop Cokelat", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "21 Nov, 09:10"},
-    {"id": "env-b1-1", "cubby": "B1", "course": "SDA", "label": "Amplop Cokelat - SDA Reguler (Kuis 1 AVL)", "folderType": "Amplop Cokelat Besar", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "19 Nov, 11:40"},
-    {"id": "env-b1-2", "cubby": "B1", "course": "SDA", "label": "Amplop Cokelat - SDA KKI (Kuis 2 Graph)", "folderType": "Amplop Cokelat", "placedBy": "Nadia Khairunnisa (Asdos)", "dateAdded": "20 Nov, 16:00"},
-    {"id": "env-b1-3", "cubby": "B1", "course": "SDA", "label": "Amplop Cokelat - SDA Susulan", "folderType": "Amplop Cokelat", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "21 Nov, 08:15"},
-    {"id": "env-c1-1", "cubby": "C1", "course": "OS", "label": "Amplop Cokelat - Sistem Operasi (Kuis 2)", "folderType": "Amplop Cokelat", "placedBy": "Nadia Khairunnisa (Asdos)", "dateAdded": "21 Nov, 10:10"},
-    {"id": "env-c1-2", "cubby": "C1", "course": "Jarkom", "label": "Amplop Cokelat - Jarkom Kelas A", "folderType": "Amplop Cokelat", "placedBy": "Nadia Khairunnisa (Asdos)", "dateAdded": "21 Nov, 10:30"},
-    {"id": "env-a2-1", "cubby": "A2", "course": "DDP 2", "label": "Map Kuning - DDP 2 Kelas C (Kuis 1)", "folderType": "Map Kuning", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "20 Nov, 13:00"},
+    {"id": "env-a2-1", "cubby": "A2", "course": "SDA", "label": "Amplop Cokelat - SDA Reguler (Kuis 1 AVL)", "folderType": "Amplop Cokelat Besar", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "19 Nov, 11:40"},
+    {"id": "env-a2-2", "cubby": "A2", "course": "SDA", "label": "Amplop Cokelat - SDA KKI (Kuis 2 Graph)", "folderType": "Amplop Cokelat", "placedBy": "Nadia Khairunnisa (Asdos)", "dateAdded": "20 Nov, 16:00"},
+    {"id": "env-a2-3", "cubby": "A2", "course": "SDA", "label": "Amplop Cokelat - SDA Susulan", "folderType": "Amplop Cokelat", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "21 Nov, 08:15"},
+    {"id": "env-a3-1", "cubby": "A3", "course": "OS", "label": "Amplop Cokelat - Sistem Operasi (Kuis 2)", "folderType": "Amplop Cokelat", "placedBy": "Nadia Khairunnisa (Asdos)", "dateAdded": "21 Nov, 10:10"},
+    {"id": "env-a3-2", "cubby": "A3", "course": "Jarkom", "label": "Amplop Cokelat - Jarkom Kelas A", "folderType": "Amplop Cokelat", "placedBy": "Nadia Khairunnisa (Asdos)", "dateAdded": "21 Nov, 10:30"},
+    # Baris B (B1, B2, B3)
+    {"id": "env-b1-1", "cubby": "B1", "course": "DDP 2", "label": "Map Kuning - DDP 2 Kelas C (Kuis 1)", "folderType": "Map Kuning", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "20 Nov, 13:00"},
     {"id": "env-b2-1", "cubby": "B2", "course": "Basdat", "label": "Amplop Cokelat - Basdat (ERD & SQL)", "folderType": "Amplop Cokelat", "placedBy": "Nadia Khairunnisa (Asdos)", "dateAdded": "20 Nov, 15:30"},
-    {"id": "env-c2-1", "cubby": "C2", "course": "TBA", "label": "Amplop Cokelat - TBA (DFA & NFA)", "folderType": "Amplop Cokelat", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "21 Nov, 08:45"},
-    {"id": "env-a3-1", "cubby": "A3", "course": "Kalkulus 1", "label": "Amplop Cokelat - Kalkulus 1 Kelas B", "folderType": "Amplop Cokelat Besar", "placedBy": "Asdos Kalkulus", "dateAdded": "20 Nov, 09:15"},
-    {"id": "env-b3-1", "cubby": "B3", "course": "Matdis 1", "label": "Amplop Cokelat - Matdis 1 (Logika)", "folderType": "Amplop Cokelat", "placedBy": "Asdos Matdis", "dateAdded": "19 Nov, 16:20"},
+    {"id": "env-b3-1", "cubby": "B3", "course": "TBA", "label": "Amplop Cokelat - TBA (DFA & NFA)", "folderType": "Amplop Cokelat", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "21 Nov, 08:45"},
+    # Baris C (C1, C2, C3)
+    {"id": "env-c1-1", "cubby": "C1", "course": "Kalkulus 1", "label": "Amplop Cokelat - Kalkulus 1 Kelas B", "folderType": "Amplop Cokelat Besar", "placedBy": "Asdos Kalkulus", "dateAdded": "20 Nov, 09:15"},
+    {"id": "env-c2-1", "cubby": "C2", "course": "Matdis 1", "label": "Amplop Cokelat - Matdis 1 (Logika)", "folderType": "Amplop Cokelat", "placedBy": "Asdos Matdis", "dateAdded": "19 Nov, 16:20"},
     {"id": "env-c3-1", "cubby": "C3", "course": "Alin", "label": "Amplop Cokelat - Aljabar Linear", "folderType": "Amplop Cokelat", "placedBy": "Asdos Alin", "dateAdded": "21 Nov, 08:30"},
-    {"id": "env-b4-1", "cubby": "B4", "course": "Adpro", "label": "Amplop Cokelat - Pemrograman Lanjut", "folderType": "Amplop Cokelat", "placedBy": "Asdos Adpro", "dateAdded": "20 Nov, 11:00"},
-    {"id": "env-c4-1", "cubby": "C4", "course": "Susulan", "label": "Amplop Cokelat - Lab & Susulan Gabungan", "folderType": "Amplop Cokelat", "placedBy": "Tim Asdos", "dateAdded": "21 Nov, 12:15"},
-    {"id": "env-a5-1", "cubby": "A5", "course": "DDP 1", "label": "Amplop Cokelat - Arsip Kuis Awal Semester", "folderType": "Amplop Cokelat Besar", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "15 Nov, 09:00"},
-    {"id": "env-c5-1", "cubby": "C5", "course": "Kalkulus 1", "label": "Map Kuning - Kalkulus Kelas A", "folderType": "Map Kuning", "placedBy": "Asdos Kalkulus", "dateAdded": "18 Nov, 14:00"},
+    # Baris D (D2, D3)
+    {"id": "env-d2-1", "cubby": "D2", "course": "Adpro", "label": "Amplop Cokelat - Pemrograman Lanjut", "folderType": "Amplop Cokelat", "placedBy": "Asdos Adpro", "dateAdded": "20 Nov, 11:00"},
+    {"id": "env-d3-1", "cubby": "D3", "course": "Susulan", "label": "Amplop Cokelat - Lab & Susulan Gabungan", "folderType": "Amplop Cokelat", "placedBy": "Tim Asdos", "dateAdded": "21 Nov, 12:15"},
+    # Baris E (E1, E3; E2 kosong)
+    {"id": "env-e1-1", "cubby": "E1", "course": "DDP 1", "label": "Amplop Cokelat - Arsip Kuis Awal Semester", "folderType": "Amplop Cokelat Besar", "placedBy": "Jonathan Tan (Asdos)", "dateAdded": "15 Nov, 09:00"},
+    {"id": "env-e3-1", "cubby": "E3", "course": "Kalkulus 1", "label": "Map Kuning - Kalkulus Kelas A", "folderType": "Map Kuning", "placedBy": "Asdos Kalkulus", "dateAdded": "18 Nov, 14:00"},
 ]
 
 INITIAL_QUIZZES: list[dict] = [
-    # Inside Envelope env-a1-1 (DDP 1 Kelas A)
+    # Inside Envelope env-a1-1 (DDP 1 Kelas A in A1)
     {"id": "q-101", "envelopeId": "env-a1-1", "cubby": "A1", "studentName": "Alya Zahra Ramadhani", "npm": "2406351891", "course": "DDP 1", "quizTitle": "Kuis 1 - Percabangan & Loop", "status": "available", "dateAdded": "20 Nov, 14:20", "pickedUpBy": None, "pickedUpAt": None},
     {"id": "q-102", "envelopeId": "env-a1-1", "cubby": "A1", "studentName": "Muhammad Rafli Alfarizi", "npm": "2406351204", "course": "DDP 1", "quizTitle": "Kuis 1 - Percabangan & Loop", "status": "available", "dateAdded": "20 Nov, 14:20", "pickedUpBy": None, "pickedUpAt": None},
     {"id": "q-103", "envelopeId": "env-a1-1", "cubby": "A1", "studentName": "Kevin Wijaya Kusuma", "npm": "2406351990", "course": "DDP 1", "quizTitle": "Kuis 1 - Percabangan & Loop", "status": "picked_up", "dateAdded": "20 Nov, 14:20", "pickedUpBy": "Kevin (2406351990)", "pickedUpAt": "21 Nov, 09:30"},
-    # Inside Envelope env-a1-2 (DDP 1 Kelas B)
+    # Inside Envelope env-a1-2 (DDP 1 Kelas B in A1)
     {"id": "q-104", "envelopeId": "env-a1-2", "cubby": "A1", "studentName": "Fadhil Rahman Hakim", "npm": "2406352011", "course": "DDP 1", "quizTitle": "Kuis 2 - List & String", "status": "available", "dateAdded": "21 Nov, 09:10", "pickedUpBy": None, "pickedUpAt": None},
     {"id": "q-105", "envelopeId": "env-a1-2", "cubby": "A1", "studentName": "Siti Nurhaliza Putri", "npm": "2406352088", "course": "DDP 1", "quizTitle": "Kuis 2 - List & String", "status": "available", "dateAdded": "21 Nov, 09:10", "pickedUpBy": None, "pickedUpAt": None},
     # Loose Paper in A1
     {"id": "q-106", "envelopeId": None, "cubby": "A1", "studentName": "Bagas Kara Pratama", "npm": "2406351442", "course": "DDP 1", "quizTitle": "Kuis 1 (Amplop Sobek)", "status": "available", "dateAdded": "20 Nov, 15:00", "pickedUpBy": None, "pickedUpAt": None},
-    # Inside Envelope env-b1-1, env-b1-2, env-b1-3 (SDA in B1)
-    {"id": "q-201", "envelopeId": "env-b1-1", "cubby": "B1", "studentName": "Jonathan Christopher Tan", "npm": "2306214509", "course": "SDA", "quizTitle": "Kuis 1 - AVL Tree & Heap", "status": "available", "dateAdded": "19 Nov, 11:40", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-202", "envelopeId": "env-b1-1", "cubby": "B1", "studentName": "Nadia Khairunnisa", "npm": "2306215567", "course": "SDA", "quizTitle": "Kuis 1 - AVL Tree & Heap", "status": "available", "dateAdded": "19 Nov, 11:40", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-203", "envelopeId": "env-b1-1", "cubby": "B1", "studentName": "Rizky Maulana Akbar", "npm": "2306214812", "course": "SDA", "quizTitle": "Kuis 1 - AVL Tree & Heap", "status": "available", "dateAdded": "19 Nov, 11:40", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-204", "envelopeId": "env-b1-2", "cubby": "B1", "studentName": "Clarissa Aurelia Wijaya", "npm": "2306215110", "course": "SDA", "quizTitle": "Kuis 2 - Shortest Path", "status": "available", "dateAdded": "20 Nov, 16:00", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-205", "envelopeId": "env-b1-2", "cubby": "B1", "studentName": "Daniel Sebastian Lim", "npm": "2306215334", "course": "SDA", "quizTitle": "Kuis 2 - Shortest Path", "status": "available", "dateAdded": "20 Nov, 16:00", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-206", "envelopeId": "env-b1-3", "cubby": "B1", "studentName": "Anisa Fitriani", "npm": "2306214901", "course": "SDA", "quizTitle": "Kuis Susulan SDA", "status": "available", "dateAdded": "21 Nov, 08:15", "pickedUpBy": None, "pickedUpAt": None},
-    # Loose Paper in B1
-    {"id": "q-207", "envelopeId": None, "cubby": "B1", "studentName": "Hendra Gunawan", "npm": "2306214777", "course": "SDA", "quizTitle": "Kuis 1 - Lembar Lepas", "status": "available", "dateAdded": "20 Nov, 10:15", "pickedUpBy": None, "pickedUpAt": None},
-    # C1 (OS & Jarkom)
-    {"id": "q-301", "envelopeId": "env-c1-1", "cubby": "C1", "studentName": "Daffa Alifiansyah", "npm": "2206081234", "course": "OS", "quizTitle": "Kuis 2 - Deadlock & Memory", "status": "available", "dateAdded": "21 Nov, 10:10", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-302", "envelopeId": "env-c1-1", "cubby": "C1", "studentName": "Putri Amalia Kartika", "npm": "2206081567", "course": "OS", "quizTitle": "Kuis 2 - Deadlock & Memory", "status": "available", "dateAdded": "21 Nov, 10:10", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-303", "envelopeId": "env-c1-2", "cubby": "C1", "studentName": "Bagas Prakoso", "npm": "2206081902", "course": "Jarkom", "quizTitle": "Kuis 1 - TCP/IP & Subnetting", "status": "available", "dateAdded": "21 Nov, 10:30", "pickedUpBy": None, "pickedUpAt": None},
-    # A2 (DDP 2)
-    {"id": "q-401", "envelopeId": "env-a2-1", "cubby": "A2", "studentName": "Farhan Syahputra", "npm": "2406353112", "course": "DDP 2", "quizTitle": "Kuis 1 - OOP & Inheritance", "status": "available", "dateAdded": "20 Nov, 13:00", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-402", "envelopeId": "env-a2-1", "cubby": "A2", "studentName": "Mutiara Salsabila", "npm": "2406353199", "course": "DDP 2", "quizTitle": "Kuis 1 - OOP & Inheritance", "status": "available", "dateAdded": "20 Nov, 13:00", "pickedUpBy": None, "pickedUpAt": None},
+    # Inside Envelope env-a2-1, env-a2-2, env-a2-3 (SDA in A2)
+    {"id": "q-201", "envelopeId": "env-a2-1", "cubby": "A2", "studentName": "Jonathan Christopher Tan", "npm": "2306214509", "course": "SDA", "quizTitle": "Kuis 1 - AVL Tree & Heap", "status": "available", "dateAdded": "19 Nov, 11:40", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-202", "envelopeId": "env-a2-1", "cubby": "A2", "studentName": "Nadia Khairunnisa", "npm": "2306215567", "course": "SDA", "quizTitle": "Kuis 1 - AVL Tree & Heap", "status": "available", "dateAdded": "19 Nov, 11:40", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-203", "envelopeId": "env-a2-1", "cubby": "A2", "studentName": "Rizky Maulana Akbar", "npm": "2306214812", "course": "SDA", "quizTitle": "Kuis 1 - AVL Tree & Heap", "status": "available", "dateAdded": "19 Nov, 11:40", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-204", "envelopeId": "env-a2-2", "cubby": "A2", "studentName": "Clarissa Aurelia Wijaya", "npm": "2306215110", "course": "SDA", "quizTitle": "Kuis 2 - Shortest Path", "status": "available", "dateAdded": "20 Nov, 16:00", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-205", "envelopeId": "env-a2-2", "cubby": "A2", "studentName": "Daniel Sebastian Lim", "npm": "2306215334", "course": "SDA", "quizTitle": "Kuis 2 - Shortest Path", "status": "available", "dateAdded": "20 Nov, 16:00", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-206", "envelopeId": "env-a2-3", "cubby": "A2", "studentName": "Anisa Fitriani", "npm": "2306214901", "course": "SDA", "quizTitle": "Kuis Susulan SDA", "status": "available", "dateAdded": "21 Nov, 08:15", "pickedUpBy": None, "pickedUpAt": None},
+    # Loose Paper in A2
+    {"id": "q-207", "envelopeId": None, "cubby": "A2", "studentName": "Hendra Gunawan", "npm": "2306214777", "course": "SDA", "quizTitle": "Kuis 1 - Lembar Lepas", "status": "available", "dateAdded": "20 Nov, 10:15", "pickedUpBy": None, "pickedUpAt": None},
+    # A3 (OS & Jarkom)
+    {"id": "q-301", "envelopeId": "env-a3-1", "cubby": "A3", "studentName": "Daffa Alifiansyah", "npm": "2206081234", "course": "OS", "quizTitle": "Kuis 2 - Deadlock & Memory", "status": "available", "dateAdded": "21 Nov, 10:10", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-302", "envelopeId": "env-a3-1", "cubby": "A3", "studentName": "Putri Amalia Kartika", "npm": "2206081567", "course": "OS", "quizTitle": "Kuis 2 - Deadlock & Memory", "status": "available", "dateAdded": "21 Nov, 10:10", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-303", "envelopeId": "env-a3-2", "cubby": "A3", "studentName": "Bagas Prakoso", "npm": "2206081902", "course": "Jarkom", "quizTitle": "Kuis 1 - TCP/IP & Subnetting", "status": "available", "dateAdded": "21 Nov, 10:30", "pickedUpBy": None, "pickedUpAt": None},
+    # B1 (DDP 2)
+    {"id": "q-401", "envelopeId": "env-b1-1", "cubby": "B1", "studentName": "Farhan Syahputra", "npm": "2406353112", "course": "DDP 2", "quizTitle": "Kuis 1 - OOP & Inheritance", "status": "available", "dateAdded": "20 Nov, 13:00", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-402", "envelopeId": "env-b1-1", "cubby": "B1", "studentName": "Mutiara Salsabila", "npm": "2406353199", "course": "DDP 2", "quizTitle": "Kuis 1 - OOP & Inheritance", "status": "available", "dateAdded": "20 Nov, 13:00", "pickedUpBy": None, "pickedUpAt": None},
     # B2 (Loose papers stack + Basdat envelope)
     {"id": "q-501", "envelopeId": None, "cubby": "B2", "studentName": "Galih Permana", "npm": "2306216001", "course": "Basdat", "quizTitle": "Kuis 1 - Lembar Lepas", "status": "available", "dateAdded": "19 Nov, 14:10", "pickedUpBy": None, "pickedUpAt": None},
     {"id": "q-502", "envelopeId": None, "cubby": "B2", "studentName": "Tiara Andini Putri", "npm": "2306216044", "course": "Basdat", "quizTitle": "Kuis 1 - Lembar Lepas", "status": "available", "dateAdded": "19 Nov, 14:10", "pickedUpBy": None, "pickedUpAt": None},
     {"id": "q-503", "envelopeId": "env-b2-1", "cubby": "B2", "studentName": "Shafira Azzahra", "npm": "2306216123", "course": "Basdat", "quizTitle": "Kuis 2 - Relational Algebra", "status": "available", "dateAdded": "20 Nov, 15:30", "pickedUpBy": None, "pickedUpAt": None},
-    # C2 (TBA)
-    {"id": "q-601", "envelopeId": "env-c2-1", "cubby": "C2", "studentName": "Andika Pratama", "npm": "2306217102", "course": "TBA", "quizTitle": "Kuis 1 - Regular Expression", "status": "available", "dateAdded": "21 Nov, 08:45", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-602", "envelopeId": "env-c2-1", "cubby": "C2", "studentName": "Vina Panduwinata", "npm": "2306217188", "course": "TBA", "quizTitle": "Kuis 1 - Regular Expression", "status": "available", "dateAdded": "21 Nov, 08:45", "pickedUpBy": None, "pickedUpAt": None},
-    # Row 3 (A3, B3, C3)
-    {"id": "q-701", "envelopeId": "env-a3-1", "cubby": "A3", "studentName": "Raka Aditya Nugraha", "npm": "2406354110", "course": "Kalkulus 1", "quizTitle": "Kuis 2 - Turunan & Limit", "status": "available", "dateAdded": "20 Nov, 09:15", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-702", "envelopeId": "env-b3-1", "cubby": "B3", "studentName": "Salsabila Khairunnisa", "npm": "2406354221", "course": "Matdis 1", "quizTitle": "Kuis 1 - Induksi Matematika", "status": "available", "dateAdded": "19 Nov, 16:20", "pickedUpBy": None, "pickedUpAt": None},
+    # B3 (TBA)
+    {"id": "q-601", "envelopeId": "env-b3-1", "cubby": "B3", "studentName": "Andika Pratama", "npm": "2306217102", "course": "TBA", "quizTitle": "Kuis 1 - Regular Expression", "status": "available", "dateAdded": "21 Nov, 08:45", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-602", "envelopeId": "env-b3-1", "cubby": "B3", "studentName": "Vina Panduwinata", "npm": "2306217188", "course": "TBA", "quizTitle": "Kuis 1 - Regular Expression", "status": "available", "dateAdded": "21 Nov, 08:45", "pickedUpBy": None, "pickedUpAt": None},
+    # Baris C (C1, C2, C3)
+    {"id": "q-701", "envelopeId": "env-c1-1", "cubby": "C1", "studentName": "Raka Aditya Nugraha", "npm": "2406354110", "course": "Kalkulus 1", "quizTitle": "Kuis 2 - Turunan & Limit", "status": "available", "dateAdded": "20 Nov, 09:15", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-702", "envelopeId": "env-c2-1", "cubby": "C2", "studentName": "Salsabila Khairunnisa", "npm": "2406354221", "course": "Matdis 1", "quizTitle": "Kuis 1 - Induksi Matematika", "status": "available", "dateAdded": "19 Nov, 16:20", "pickedUpBy": None, "pickedUpAt": None},
     {"id": "q-703", "envelopeId": "env-c3-1", "cubby": "C3", "studentName": "Reyhan Zulfikar", "npm": "2306218105", "course": "Alin", "quizTitle": "Kuis 1 - Determinan & Matriks", "status": "available", "dateAdded": "21 Nov, 08:30", "pickedUpBy": None, "pickedUpAt": None},
-    # Row 4 (A4 loose papers only, B4, C4)
-    {"id": "q-801", "envelopeId": None, "cubby": "A4", "studentName": "Ilham Saputra", "npm": "2406355101", "course": "Statprob", "quizTitle": "Kuis 1 - Kertas Lepas", "status": "available", "dateAdded": "20 Nov, 10:00", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-802", "envelopeId": "env-b4-1", "cubby": "B4", "studentName": "Naufal Hakim", "npm": "2306218502", "course": "Adpro", "quizTitle": "Kuis 1 - Concurrency", "status": "available", "dateAdded": "20 Nov, 11:00", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-803", "envelopeId": "env-c4-1", "cubby": "C4", "studentName": "Citra Kirana Dewi", "npm": "2306218990", "course": "Susulan", "quizTitle": "Kuis Susulan Lab", "status": "available", "dateAdded": "21 Nov, 12:15", "pickedUpBy": None, "pickedUpAt": None},
-    # Row 5 (A5, C5)
-    {"id": "q-901", "envelopeId": "env-a5-1", "cubby": "A5", "studentName": "Bintang Ramadhan", "npm": "2406350012", "course": "DDP 1", "quizTitle": "Kuis 0 - Pengenalan Python", "status": "available", "dateAdded": "15 Nov, 09:00", "pickedUpBy": None, "pickedUpAt": None},
-    {"id": "q-902", "envelopeId": "env-c5-1", "cubby": "C5", "studentName": "Larasati Ayuningtyas", "npm": "2406350099", "course": "Kalkulus 1", "quizTitle": "Kuis 1 - Fungsi & Grafik", "status": "available", "dateAdded": "18 Nov, 14:00", "pickedUpBy": None, "pickedUpAt": None},
+    # Baris D (D1 loose papers only, D2, D3)
+    {"id": "q-801", "envelopeId": None, "cubby": "D1", "studentName": "Ilham Saputra", "npm": "2406355101", "course": "Statprob", "quizTitle": "Kuis 1 - Kertas Lepas", "status": "available", "dateAdded": "20 Nov, 10:00", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-802", "envelopeId": "env-d2-1", "cubby": "D2", "studentName": "Naufal Hakim", "npm": "2306218502", "course": "Adpro", "quizTitle": "Kuis 1 - Concurrency", "status": "available", "dateAdded": "20 Nov, 11:00", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-803", "envelopeId": "env-d3-1", "cubby": "D3", "studentName": "Citra Kirana Dewi", "npm": "2306218990", "course": "Susulan", "quizTitle": "Kuis Susulan Lab", "status": "available", "dateAdded": "21 Nov, 12:15", "pickedUpBy": None, "pickedUpAt": None},
+    # Baris E (E1, E3; E2 kosong)
+    {"id": "q-901", "envelopeId": "env-e1-1", "cubby": "E1", "studentName": "Bintang Ramadhan", "npm": "2406350012", "course": "DDP 1", "quizTitle": "Kuis 0 - Pengenalan Python", "status": "available", "dateAdded": "15 Nov, 09:00", "pickedUpBy": None, "pickedUpAt": None},
+    {"id": "q-902", "envelopeId": "env-e3-1", "cubby": "E3", "studentName": "Larasati Ayuningtyas", "npm": "2406350099", "course": "Kalkulus 1", "quizTitle": "Kuis 1 - Fungsi & Grafik", "status": "available", "dateAdded": "18 Nov, 14:00", "pickedUpBy": None, "pickedUpAt": None},
 ]
 
 INITIAL_NOTIFICATIONS: list[dict] = [
@@ -204,8 +209,19 @@ class RackStore:
         if self.file_path.exists():
             try:
                 data = json.loads(self.file_path.read_text(encoding="utf-8"))
-                self.envelopes = data.get("envelopes", copy.deepcopy(INITIAL_ENVELOPES))
-                self.quizzes = data.get("quizzes", copy.deepcopy(INITIAL_QUIZZES))
+                loaded_envelopes = data.get("envelopes", copy.deepcopy(INITIAL_ENVELOPES))
+                loaded_quizzes = data.get("quizzes", copy.deepcopy(INITIAL_QUIZZES))
+                valid_cubbies = set(get_all_cubby_ids())
+                has_legacy_cubby = any(
+                    item.get("cubby") not in valid_cubbies
+                    for item in (*loaded_envelopes, *loaded_quizzes)
+                )
+                if has_legacy_cubby:
+                    self.reset()
+                    return
+
+                self.envelopes = loaded_envelopes
+                self.quizzes = loaded_quizzes
                 self.notifications = data.get("notifications", copy.deepcopy(INITIAL_NOTIFICATIONS))
                 self.class_rosters = data.get("classRosters", copy.deepcopy(INITIAL_CLASS_ROSTERS))
                 return
@@ -377,13 +393,21 @@ class RackStore:
             self.notifications.insert(0, item)
         self.save()
 
-    def get_notifications_for_user(self, user: dict | None) -> list[dict]:
-        """Return notifications visible to the current user (sent by TA or addressed to student)."""
+    def get_personal_notifications_for_user(self, user: dict | None) -> list[dict]:
+        """Return only notifications addressed to this user's own NPM (for both students & TAs)."""
         if not user:
             return []
-        if user.get("role") == "asdos":
-            return [n for n in self.notifications if n.get("senderName") == user.get("name")]
         return [n for n in self.notifications if n.get("recipientNpm") == user.get("npm")]
+
+    def get_sent_notifications_for_user(self, user: dict | None) -> list[dict]:
+        """Return notifications dispatched by the logged-in TA (separate TA history tab)."""
+        if not user or user.get("role") != "asdos":
+            return []
+        return [n for n in self.notifications if n.get("senderName") == user.get("name")]
+
+    def get_notifications_for_user(self, user: dict | None) -> list[dict]:
+        """Alias for personal notifications addressed to the active user."""
+        return self.get_personal_notifications_for_user(user)
 
     def mark_notification_read(self, notif_id: str) -> bool:
         """Mark a single notification as read."""
@@ -405,6 +429,39 @@ class RackStore:
             self.save()
         return changed
 
+    def upsert_class_roster(
+        self,
+        class_id: str,
+        course: str,
+        class_name: str,
+        students: list[dict],
+        source: str = "manual",
+    ) -> dict:
+        """Create or update a class roster in the store and persist to disk."""
+        clean_students = [
+            Student(
+                npm=str(s["npm"]).strip(),
+                name=str(s["name"]).strip(),
+                username=str(s.get("username", "")).strip(),
+            ).to_dict()
+            for s in students
+            if s.get("npm") and s.get("name")
+        ]
+        if not clean_students:
+            raise ValueError("Daftar mahasiswa kosong — tidak ada baris valid untuk diimpor.")
+
+        roster = ClassRoster(
+            id=class_id,
+            course=course.strip(),
+            class_name=class_name.strip(),
+            label=f"{course.strip()} — {class_name.strip()}" if class_name.strip() else course.strip(),
+            students=[Student(**s) for s in clean_students],
+        ).to_dict()
+        roster["source"] = source
+        self.class_rosters[class_id] = roster
+        self.save()
+        return roster
+
     def import_roster_from_csv(
         self,
         csv_text: str,
@@ -421,6 +478,7 @@ class RackStore:
             npm = (
                 normalized.get("npm")
                 or normalized.get("id number")
+                or normalized.get("idnumber")
                 or normalized.get("nim")
                 or ""
             )
@@ -428,26 +486,24 @@ class RackStore:
                 normalized.get("name")
                 or normalized.get("nama")
                 or normalized.get("full name")
+                or normalized.get("fullname")
                 or " ".join(
                     p for p in [normalized.get("first name", ""), normalized.get("last name", "")] if p
                 ).strip()
             )
             username = normalized.get("username") or (
-                normalized.get("email address", "").split("@")[0]
+                (normalized.get("email address") or normalized.get("email") or "").split("@")[0]
             )
             if not username and name:
                 username = ".".join(name.lower().split()[:2])
 
             if npm and name:
-                students.append(Student(npm=npm, name=name, username=username).to_dict())
+                students.append({"npm": npm, "name": name, "username": username})
 
-        roster = ClassRoster(
-            id=class_id,
+        return self.upsert_class_roster(
+            class_id=class_id,
             course=course,
             class_name=class_name,
-            label=f"{course} — {class_name}",
-            students=[Student(**s) for s in students],
-        ).to_dict()
-        self.class_rosters[class_id] = roster
-        self.save()
-        return roster
+            students=students,
+            source="csv",
+        )

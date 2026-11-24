@@ -392,7 +392,7 @@
     <!-- ===================================================================== -->
     <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
 
-        <!-- 0. Notification Inbox Panel (Personal Student Alerts / TA Sent Log) -->
+        <!-- 0. Personal Notification Inbox Panel (Addressed to Current User's NPM Only) -->
         <section id="student-notif-panel" class="hidden paper-card p-4 sm:p-5 bg-[#FEFCE8] space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
@@ -415,6 +415,26 @@
             <div id="notif-panel-list" class="space-y-2"></div>
         </section>
 
+        <!-- 0.5. TA Workspace Tabs (Only Visible to Logged-In TAs) -->
+        <nav id="ta-workspace-tabs" aria-label="Navigasi Workspace Asdos" class="hidden flex-wrap items-center gap-2">
+            <button id="ta-tab-rack" type="button" onclick="switchMainTab('rack')"
+                class="tactile-btn inline-flex items-center gap-1.5 px-4 py-2 bg-[#1D4ED8] text-white text-xs sm:text-sm font-extrabold cursor-pointer">
+                <span>Lemari Rak (A1–E3)</span>
+            </button>
+            <button id="ta-tab-sent" type="button" onclick="switchMainTab('sent')"
+                class="tactile-btn inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-blue-50 text-slate-900 text-xs sm:text-sm font-extrabold cursor-pointer">
+                <span>Riwayat Kirim</span>
+                <span id="ta-sent-badge" class="px-2 py-0.5 bg-[#DBEAFE] text-[#1D4ED8] border border-slate-900 rounded-full text-[10px] font-mono font-bold">0</span>
+            </button>
+            <button id="ta-tab-scele" type="button" onclick="switchMainTab('scele')"
+                class="tactile-btn inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-emerald-50 text-slate-900 text-xs sm:text-sm font-extrabold cursor-pointer">
+                <span>Sinkron SCELE</span>
+                <span id="ta-scele-status-pill" class="px-2 py-0.5 bg-slate-200 text-slate-700 border border-slate-900 rounded-full text-[10px] font-mono font-bold">Offline</span>
+            </button>
+        </nav>
+
+        <!-- VIEW A: RACK & SEARCH WORKSPACE -->
+        <div id="rack-view-container" class="space-y-6">
         <!-- 1. Search Bar & Compact Inventory Strip -->
         <section class="paper-card p-4 sm:p-5 space-y-3.5">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
@@ -461,14 +481,14 @@
             </div>
         </section>
 
-        <!-- 2. CARTOON 3x5 WOODEN BOOKSHELF UNIT (3 KOLOM x 5 BARIS) -->
-        <section aria-label="Denah Rak Sekretariat 3 Kolom 5 Baris" class="space-y-3">
+        <!-- 2. CARTOON 5x3 WOODEN BOOKSHELF UNIT (BARIS A–E x KOLOM 1–3) -->
+        <section aria-label="Denah Rak Sekretariat 5 Baris 3 Kolom" class="space-y-3">
             
             <!-- Section Header & Inline Legend -->
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 px-0.5">
                 <div>
                     <h2 class="font-logo text-lg sm:text-xl font-bold tracking-tight text-slate-900">
-                        Lemari Rak Kuis Sekretariat (3 Kolom × 5 Baris)
+                        Lemari Rak Kuis Sekretariat (Baris A–E × Kolom 1–3)
                     </h2>
                     <p class="text-xs font-medium text-slate-600">
                         Klik kotak loker kayu untuk membuka daftar Berkas & Kertas Kuis di dalamnya!
@@ -495,28 +515,232 @@
                 <div class="flex items-center justify-between mb-3 pl-9 sm:pl-12">
                     <div class="grid grid-cols-3 gap-2.5 sm:gap-4 w-full">
                         <div class="bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-xl py-1.5 px-2 text-center shadow-[0_3px_0_#0F172A]">
-                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">KOLOM A</span>
-                            <span class="hidden sm:inline text-[11px] font-bold text-slate-600 ml-1">(A1–A5)</span>
+                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">KOLOM 1</span>
+                            <span class="hidden sm:inline text-[11px] font-bold text-slate-600 ml-1">(A1–E1)</span>
                         </div>
                         <div class="bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-xl py-1.5 px-2 text-center shadow-[0_3px_0_#0F172A]">
-                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">KOLOM B</span>
-                            <span class="hidden sm:inline text-[11px] font-bold text-slate-600 ml-1">(B1–B5)</span>
+                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">KOLOM 2</span>
+                            <span class="hidden sm:inline text-[11px] font-bold text-slate-600 ml-1">(A2–E2)</span>
                         </div>
                         <div class="bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-xl py-1.5 px-2 text-center shadow-[0_3px_0_#0F172A]">
-                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">KOLOM C</span>
-                            <span class="hidden sm:inline text-[11px] font-bold text-slate-600 ml-1">(C1–C5)</span>
+                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">KOLOM 3</span>
+                            <span class="hidden sm:inline text-[11px] font-bold text-slate-600 ml-1">(A3–E3)</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5 Rows x 3 Columns Container -->
+                <!-- 5 Rows (A-E) x 3 Columns (1-3) Container -->
                 <div id="cartoon-rack-rows" class="space-y-3 sm:space-y-4"></div>
 
                 <!-- Wooden Cabinet Feet & Bottom Stamp -->
                 <div class="mt-4 pt-2.5 border-t-2 border-[#8C5225] flex items-center justify-between text-[11px] font-logo font-bold text-white px-1">
-                    <span>LEMARI KAYU RAK-IT • 15 LOKER</span>
+                    <span>LEMARI KAYU RAK-IT • 15 LOKER (A1–E3)</span>
                     <span>SEKRETARIAT FASILKOM UI</span>
                 </div>
+            </div>
+        </section>
+        </div>
+
+        <!-- VIEW B: TA SENT NOTIFICATIONS LOG TAB (SEPARATE FROM PERSONAL NOTIFS) -->
+        <section id="ta-sent-view" class="hidden paper-card p-4 sm:p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 bg-[#1D4ED8] text-white text-[11px] font-logo font-bold border-2 border-slate-900 rounded-full shadow-[0_2px_0_#0F172A]">
+                            LOG ASDOS
+                        </span>
+                        <h2 id="ta-sent-title" class="font-logo text-lg font-bold text-slate-900">
+                            Riwayat Notifikasi Terkirim (0)
+                        </h2>
+                    </div>
+                    <p class="text-xs font-medium text-slate-600 mt-0.5">
+                        Daftar mahasiswa yang sudah kamu beri notifikasi saat menaruh berkas. Terpisah dari Inbox Notif pribadimu.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="ta-sent-filter" oninput="renderTaSentLog()" placeholder="Filter nama, NPM, matkul, atau loker..."
+                        class="w-full sm:w-64 px-3 py-1.5 bg-slate-50 border-2 border-slate-900 rounded-xl text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white">
+                </div>
+            </div>
+            <div id="ta-sent-list" class="space-y-2"></div>
+        </section>
+
+        <!-- VIEW C: TA SCELE INTEGRATION & CSV ROSTER SYNC TAB -->
+        <section id="ta-scele-view" class="hidden space-y-5">
+            <!-- Card 1: Direct SCELE Moodle Web Services Integration -->
+            <div class="paper-card p-4 sm:p-5 space-y-4">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 bg-[#10B981] text-white text-[11px] font-logo font-bold border-2 border-slate-900 rounded-full shadow-[0_2px_0_#0F172A]">
+                                SCELE MOODLE API
+                            </span>
+                            <h2 class="font-logo text-lg font-bold text-slate-900">
+                                Sinkronisasi Daftar Kelas dari SCELE
+                            </h2>
+                        </div>
+                        <p class="text-xs font-medium text-slate-600 mt-1">
+                            Menggunakan Moodle Web Services (<code class="font-mono bg-slate-100 px-1 rounded">moodle_mobile_app</code>) seperti <code class="font-mono bg-slate-100 px-1 rounded">scele-cli</code> untuk menarik daftar mata kuliah &amp; mahasiswa langsung ke dropdown Asdos.
+                        </p>
+                    </div>
+                    <div id="scele-connected-controls" class="hidden items-center gap-2">
+                        <span id="scele-connected-user" class="px-3 py-1 bg-[#D1FAE5] text-[#065F46] border-2 border-slate-900 rounded-full text-xs font-extrabold">
+                            Terhubung
+                        </span>
+                        <button type="button" onclick="loadSceleCourses()" class="tactile-btn px-3 py-1.5 bg-white hover:bg-blue-50 text-slate-900 text-xs font-extrabold cursor-pointer">
+                            Muat Ulang
+                        </button>
+                        <button type="button" onclick="handleSceleDisconnect()" class="tactile-btn px-3 py-1.5 bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-extrabold cursor-pointer">
+                            Putuskan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SCELE Login / Token Form (shown when not connected) -->
+                <form id="scele-connect-form" onsubmit="handleSceleConnect(event)" class="bg-slate-50 border-2 border-slate-900 rounded-2xl p-4 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <p class="text-xs font-extrabold text-slate-900">Hubungkan Akun SCELE Fasilkom UI</p>
+                        <label class="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#1D4ED8] cursor-pointer select-none">
+                            <input type="checkbox" id="scele-use-token" onchange="toggleSceleAuthMode()" class="accent-[#1D4ED8] cursor-pointer">
+                            Pakai wstoken dari scele-cli (tanpa password)
+                        </label>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label for="scele-base-url" class="block text-[11px] font-extrabold text-slate-700 mb-1">URL SCELE / Moodle</label>
+                            <input type="url" id="scele-base-url" value="https://scele.cs.ui.ac.id" required
+                                class="w-full px-3 py-2 bg-white border-2 border-slate-900 rounded-xl text-xs font-mono text-slate-900 focus:outline-none">
+                        </div>
+
+                        <div id="scele-cred-user-wrap">
+                            <label for="scele-username" class="block text-[11px] font-extrabold text-slate-700 mb-1">Username SCELE / SSO</label>
+                            <input type="text" id="scele-username" placeholder="nama.mahasiswa"
+                                class="w-full px-3 py-2 bg-white border-2 border-slate-900 rounded-xl text-xs font-mono text-slate-900 focus:outline-none">
+                        </div>
+
+                        <div id="scele-cred-pass-wrap">
+                            <label for="scele-password" class="block text-[11px] font-extrabold text-slate-700 mb-1">Password SCELE</label>
+                            <input type="password" id="scele-password" placeholder="••••••••••••"
+                                class="w-full px-3 py-2 bg-white border-2 border-slate-900 rounded-xl text-xs text-slate-900 focus:outline-none">
+                        </div>
+
+                        <div id="scele-token-wrap" class="hidden sm:col-span-2">
+                            <label for="scele-token" class="block text-[11px] font-extrabold text-slate-700 mb-1">Moodle Web Service Token (wstoken)</label>
+                            <input type="password" id="scele-token" placeholder="Tempel token dari %APPDATA%\scele\token.json"
+                                class="w-full px-3 py-2 bg-white border-2 border-slate-900 rounded-xl text-xs font-mono text-slate-900 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <p class="text-[11px] text-slate-600">
+                            Password tidak pernah disimpan; hanya dipakai sekali untuk membuat token sesi Flask sementara.
+                        </p>
+                        <button type="submit" id="btn-scele-connect" class="tactile-btn px-4 py-2 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white text-xs font-extrabold cursor-pointer">
+                            Hubungkan ke SCELE
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Connected SCELE Courses & Student Preview -->
+                <div id="scele-courses-area" class="hidden space-y-4">
+                    <div>
+                        <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 mb-2">
+                            Daftar Mata Kuliah SCELE Kamu (<span id="scele-course-count">0</span>)
+                        </h3>
+                        <div id="scele-courses-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+                    </div>
+
+                    <!-- Preview & Import Form for Selected Course -->
+                    <form id="scele-import-box" onsubmit="handleSceleImport(event)" class="hidden bg-[#EFF6FF] border-2 border-slate-900 rounded-2xl p-4 space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <h4 id="scele-preview-title" class="text-sm font-extrabold text-slate-900">Pratinjau Roster</h4>
+                                <p id="scele-preview-subtitle" class="text-xs font-semibold text-slate-600">0 mahasiswa siap diimpor</p>
+                            </div>
+                            <span id="scele-preview-count-badge" class="px-2.5 py-0.5 bg-[#D1FAE5] text-[#065F46] border-2 border-slate-900 rounded-full text-xs font-mono font-bold">
+                                0 mhs
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label for="scele-import-course" class="block text-[11px] font-extrabold text-slate-800 mb-1">Nama Mata Kuliah <span class="text-[#EA580C]">*</span></label>
+                                <input type="text" id="scele-import-course" required
+                                    class="w-full px-3 py-1.5 bg-white border-2 border-slate-900 rounded-xl text-xs font-bold text-slate-900">
+                            </div>
+                            <div>
+                                <label for="scele-import-class" class="block text-[11px] font-extrabold text-slate-800 mb-1">Label Kelas <span class="text-[#EA580C]">*</span></label>
+                                <input type="text" id="scele-import-class" required placeholder="Misal: Kelas G"
+                                    class="w-full px-3 py-1.5 bg-white border-2 border-slate-900 rounded-xl text-xs font-bold text-slate-900">
+                            </div>
+                            <div>
+                                <label for="scele-import-group" class="block text-[11px] font-extrabold text-slate-800 mb-1">Filter Grup Moodle (Opsional)</label>
+                                <select id="scele-import-group" onchange="updateSceleGroupPreview()"
+                                    class="w-full px-3 py-1.5 bg-white border-2 border-slate-900 rounded-xl text-xs font-bold text-slate-900 cursor-pointer">
+                                    <option value="">Semua Peserta di Course Ini</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="scele-preview-students" class="max-h-40 overflow-y-auto bg-white border-2 border-slate-900 rounded-xl p-2.5 space-y-1 text-xs"></div>
+
+                        <div class="flex items-center justify-end gap-2">
+                            <button type="submit" id="btn-scele-import" class="tactile-btn px-4 py-2 bg-[#10B981] hover:bg-[#059669] text-white text-xs font-extrabold cursor-pointer">
+                                Impor ke Dropdown Kelas Asdos
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card 2: Offline Fallback — SCELE/EMAS CSV Roster Importer -->
+            <div class="paper-card p-4 sm:p-5 space-y-3.5">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 bg-[#FEF08A] text-slate-900 text-[11px] font-logo font-bold border-2 border-slate-900 rounded-full shadow-[0_2px_0_#0F172A]">
+                            OFFLINE FALLBACK
+                        </span>
+                        <h3 class="font-logo text-base font-bold text-slate-900">
+                            Impor Roster via CSV (Export SCELE / EMAS)
+                        </h3>
+                    </div>
+                    <p class="text-xs font-medium text-slate-600 mt-0.5">
+                        Alternatif cepat tanpa login SCELE: unggah file <code class="font-mono bg-slate-100 px-1 rounded">.csv</code> peserta/nilai dari SCELE (kolom <code class="font-mono bg-slate-100 px-1 rounded">NPM/ID number</code>, <code class="font-mono bg-slate-100 px-1 rounded">Name/Full name</code>, <code class="font-mono bg-slate-100 px-1 rounded">Email address</code>).
+                    </p>
+                </div>
+
+                <form id="csv-import-form" onsubmit="handleCsvImport(event)" class="space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label for="csv-course-name" class="block text-[11px] font-extrabold text-slate-800 mb-1">Mata Kuliah <span class="text-[#EA580C]">*</span></label>
+                            <input type="text" id="csv-course-name" required placeholder="Misal: DDP 1"
+                                class="w-full px-3 py-1.5 bg-slate-50 border-2 border-slate-900 rounded-xl text-xs font-bold text-slate-900 focus:bg-white">
+                        </div>
+                        <div>
+                            <label for="csv-class-name" class="block text-[11px] font-extrabold text-slate-800 mb-1">Nama Kelas <span class="text-[#EA580C]">*</span></label>
+                            <input type="text" id="csv-class-name" required placeholder="Misal: Kelas G"
+                                class="w-full px-3 py-1.5 bg-slate-50 border-2 border-slate-900 rounded-xl text-xs font-bold text-slate-900 focus:bg-white">
+                        </div>
+                        <div>
+                            <label for="csv-file-input" class="block text-[11px] font-extrabold text-slate-800 mb-1">Pilih File CSV (Opsional)</label>
+                            <input type="file" id="csv-file-input" accept=".csv,text/csv" onchange="handleCsvFileSelect(event)"
+                                class="w-full px-2.5 py-1 bg-slate-50 border-2 border-slate-900 rounded-xl text-[11px] font-semibold text-slate-700 cursor-pointer">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="csv-text-input" class="block text-[11px] font-extrabold text-slate-800 mb-1">Isi CSV <span class="text-[#EA580C]">*</span></label>
+                        <textarea id="csv-text-input" rows="4" required placeholder="NPM,Name,Email address&#10;2406351891,Alya Zahra Ramadhani,alya.zahra24@ui.ac.id&#10;2406351204,Muhammad Rafli Alfarizi,muhammad.rafli24@ui.ac.id"
+                            class="w-full p-2.5 bg-slate-50 border-2 border-slate-900 rounded-xl text-xs font-mono text-slate-900 focus:bg-white"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-end">
+                        <button type="submit" class="tactile-btn px-4 py-2 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white text-xs font-extrabold cursor-pointer">
+                            Impor CSV ke Daftar Kelas
+                        </button>
+                    </div>
+                </form>
             </div>
         </section>
 
@@ -623,7 +847,7 @@
                                 0 Amplop
                             </span>
                         </div>
-                        <p id="drawer-subtitle" class="text-xs font-bold text-blue-100">Kolom A &bull; Baris 1</p>
+                        <p id="drawer-subtitle" class="text-xs font-bold text-blue-100">Baris A &bull; Kolom 1</p>
                     </div>
                 </div>
 
@@ -737,9 +961,14 @@
             <form id="envelope-input-form" onsubmit="handleEnvelopeSubmit(event)" class="p-5 space-y-3.5 overflow-y-auto flex-1">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label for="env-class" class="block text-xs font-extrabold text-slate-800 mb-1">
-                            Kelas Diampu (SCELE) <span class="text-[#EA580C]">*</span>
-                        </label>
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="env-class" class="block text-xs font-extrabold text-slate-800">
+                                Kelas Diampu (SCELE) <span class="text-[#EA580C]">*</span>
+                            </label>
+                            <button type="button" onclick="openSceleTabFromInputModal()" class="text-[11px] font-extrabold text-[#1D4ED8] hover:underline cursor-pointer">
+                                + Sinkron SCELE
+                            </button>
+                        </div>
                         <select id="env-class" required onchange="onEnvClassChange()"
                             class="w-full px-3 py-2 bg-[#EFF6FF] border-2 border-slate-900 rounded-xl text-sm font-extrabold text-slate-900 focus:outline-none focus:bg-white cursor-pointer">
                         </select>
@@ -755,7 +984,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label for="env-rack" class="block text-xs font-extrabold text-slate-800 mb-1">Loker Tujuan (A1–C5) <span class="text-[#EA580C]">*</span></label>
+                        <label for="env-rack" class="block text-xs font-extrabold text-slate-800 mb-1">Loker Tujuan (A1–E3) <span class="text-[#EA580C]">*</span></label>
                         <select id="env-rack" required class="w-full px-3 py-2 bg-[#FFFDF7] border-2 border-slate-900 rounded-xl text-sm font-logo font-bold text-slate-900 focus:outline-none cursor-pointer"></select>
                     </div>
                     <div>
@@ -874,7 +1103,7 @@
                             class="w-full px-3 py-2 bg-[#FFFDF7] border-2 border-slate-900 rounded-xl text-sm">
                     </div>
                     <div>
-                        <label for="loose-rack" class="block text-xs font-extrabold text-slate-800 mb-1">Loker (A1–C5)</label>
+                        <label for="loose-rack" class="block text-xs font-extrabold text-slate-800 mb-1">Loker (A1–E3)</label>
                         <select id="loose-rack" class="w-full px-3 py-2 bg-[#FFFDF7] border-2 border-slate-900 rounded-xl text-sm font-logo font-bold cursor-pointer"></select>
                     </div>
                 </div>
@@ -909,14 +1138,14 @@
         const INITIAL_CUBBY = {{ initial_cubby | tojson }};
         const REAL_SSO_ENABLED = {{ real_sso_enabled | tojson }};
 
-        const COLUMNS = ['A', 'B', 'C'];
-        const ROWS = [1, 2, 3, 4, 5];
+        const ROWS = ['A', 'B', 'C', 'D', 'E'];
+        const COLUMNS = [1, 2, 3];
 
         function getAllCubbyIds() {
             const list = [];
             for (const r of ROWS) {
                 for (const c of COLUMNS) {
-                    list.push(`${c}${r}`);
+                    list.push(`${r}${c}`);
                 }
             }
             return list;
@@ -925,12 +1154,19 @@
         let envelopes = [];
         let quizzes = [];
         let notifications = [];
+        let sentNotifications = [];
         let classRosters = {};
         let suggestedCubby = 'A1';
         let currentStats = { envelopes: 0, loose: 0, available: 0 };
         let currentUser = null;
         let activeCubbyId = null;
         let activeEnvelopeId = null;
+        let activeMainTab = 'rack';
+        let sceleConnected = false;
+        let sceleUser = null;
+        let sceleBaseUrl = 'https://scele.cs.ui.ac.id';
+        let sceleCourses = [];
+        let scelePreview = null;
         let selectedStudentNpms = new Set();
         let notifPanelOpen = false;
         let stateLoaded = false;
@@ -961,9 +1197,17 @@
             envelopes = Array.isArray(state.envelopes) ? state.envelopes : [];
             quizzes = Array.isArray(state.quizzes) ? state.quizzes : [];
             notifications = Array.isArray(state.notifications) ? state.notifications : [];
+            sentNotifications = Array.isArray(state.sentNotifications) ? state.sentNotifications : [];
             classRosters = state.classRosters || {};
             suggestedCubby = state.suggestedCubby || 'A1';
             currentStats = state.stats || { envelopes: 0, loose: 0, available: 0 };
+            sceleConnected = Boolean(state.sceleConnected);
+            sceleUser = state.sceleUser || null;
+            if (state.sceleBaseUrl) {
+                sceleBaseUrl = state.sceleBaseUrl;
+                const urlInput = document.getElementById('scele-base-url');
+                if (urlInput && !urlInput.value) urlInput.value = sceleBaseUrl;
+            }
             stateLoaded = true;
             populateCubbyDropdowns();
         }
@@ -1000,9 +1244,12 @@
             try {
                 const state = await apiRequest('/api/state', null, 'GET');
                 applyServerState(state);
-                notifPanelOpen = Boolean(currentUser && !isAsdos() && notifications.some(n => !n.read));
+                notifPanelOpen = Boolean(currentUser && notifications.some(n => !n.read));
                 updateAuthUI();
                 renderAll();
+                if (isAsdos() && sceleConnected) {
+                    loadSceleCourses();
+                }
                 maybeHandleInitialEntry();
             } catch (err) {
                 showToast('Gagal Memuat Data', err.message);
@@ -1086,7 +1333,10 @@
             try {
                 const state = await apiRequest('/api/auth/login', { username: rawUsername });
                 applyServerState(state);
-                notifPanelOpen = !isAsdos() && notifications.some(n => !n.read);
+                notifPanelOpen = notifications.some(n => !n.read);
+                activeMainTab = 'rack';
+                sceleCourses = [];
+                scelePreview = null;
 
                 closeSsoLoginModal();
                 updateAuthUI();
@@ -1113,6 +1363,9 @@
                 const state = await apiRequest('/api/auth/logout', {});
                 applyServerState(state);
                 notifPanelOpen = false;
+                activeMainTab = 'rack';
+                sceleCourses = [];
+                scelePreview = null;
                 initialCubbyOpened = false;
                 closeCubbyDrawer();
                 closeInputModal();
@@ -1149,6 +1402,8 @@
                 drawerAddMobile.classList.add('hidden');
                 drawerAddMobile.classList.remove('inline-flex');
                 roleHint.textContent = 'Belum Login SSO';
+                activeMainTab = 'rack';
+                renderTaTabs();
                 renderNotificationUI();
                 return;
             }
@@ -1191,7 +1446,9 @@
                 drawerAddMobile.classList.remove('inline-flex', 'sm:hidden');
 
                 roleHint.textContent = 'Akses Mahasiswa: Cek & Ambil Kuis Saja';
+                activeMainTab = 'rack';
             }
+            renderTaTabs();
             renderNotificationUI();
         }
 
@@ -1292,6 +1549,9 @@
             updateStats();
             renderCartoonBookshelf();
             renderNotificationUI();
+            renderTaTabs();
+            renderTaSentLog();
+            renderSceleView();
             if (activeCubbyId && !document.getElementById('cubby-drawer-modal').classList.contains('hidden')) {
                 renderCubbyDrawerContent();
             }
@@ -1338,17 +1598,17 @@
             }
 
             let rowsHtml = '';
-            ROWS.forEach(rowNum => {
+            ROWS.forEach(rowChar => {
                 rowsHtml += `
                     <div class="flex items-stretch gap-2 sm:gap-3">
                         <div class="w-7 sm:w-9 shrink-0 flex items-center justify-center bg-[#DBEAFE] border-[2.5px] border-slate-900 rounded-xl shadow-[0_3px_0_#0F172A]">
-                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">R${rowNum}</span>
+                            <span class="font-logo text-xs sm:text-sm font-bold text-[#1D4ED8]">${rowChar}</span>
                         </div>
                         <div class="flex-1 grid grid-cols-3 gap-2.5 sm:gap-4">
                 `;
 
-                COLUMNS.forEach(colChar => {
-                    const cubbyId = `${colChar}${rowNum}`;
+                COLUMNS.forEach(colNum => {
+                    const cubbyId = `${rowChar}${colNum}`;
                     const cubbyEnvelopes = envelopes.filter(e => e.cubby === cubbyId);
                     const cubbyLoose = quizzes.filter(qz => qz.cubby === cubbyId && !qz.envelopeId && qz.status === 'available');
                     const matchedList = searchMatches.get(cubbyId) || [];
@@ -1459,12 +1719,12 @@
             activeCubbyId = cubbyId;
             activeEnvelopeId = null;
 
-            const col = cubbyId.charAt(0);
-            const row = cubbyId.charAt(1);
+            const row = cubbyId.charAt(0);
+            const col = cubbyId.charAt(1);
 
             document.getElementById('drawer-cubby-badge').textContent = cubbyId;
             document.getElementById('drawer-title').textContent = `Isi Loker ${cubbyId}`;
-            document.getElementById('drawer-subtitle').textContent = `Kolom ${col} • Baris ${row}`;
+            document.getElementById('drawer-subtitle').textContent = `Baris ${row} • Kolom ${col}`;
             document.getElementById('drawer-cubby-switcher').value = cubbyId;
 
             renderCubbyDrawerContent();
@@ -2120,13 +2380,10 @@
         }
 
         // =====================================================================
-        // NOTIFICATION INBOX (STUDENT ALERTS & TA DISPATCH LOG)
+        // PERSONAL NOTIFICATION INBOX (STRICTLY ADDRESSED TO CURRENT USER'S NPM)
         // =====================================================================
-        function getRelevantNotifications() {
+        function getPersonalNotifications() {
             if (!currentUser) return [];
-            if (isAsdos()) {
-                return notifications.filter(n => n.senderName === currentUser.name);
-            }
             return notifications.filter(n => n.recipientNpm === currentUser.npm);
         }
 
@@ -2144,13 +2401,14 @@
                 const res = await apiRequest(`/api/notifications/${encodeURIComponent(notifId)}/read`, {});
                 applyServerState(res.state);
                 renderNotificationUI();
+                renderTaSentLog();
             } catch (err) {
                 showToast('Gagal Memperbarui Notifikasi', err.message);
             }
         }
 
         async function markAllNotificationsRead() {
-            if (!currentUser || isAsdos()) return;
+            if (!currentUser) return;
             try {
                 const res = await apiRequest('/api/notifications/read-all', {});
                 applyServerState(res.state);
@@ -2162,6 +2420,13 @@
 
         function openCubbyFromNotification(notifId, cubbyId, envelopeId) {
             markNotificationRead(notifId);
+            openCubbyDrawer(cubbyId);
+            if (envelopeId && envelopes.some(e => e.id === envelopeId)) {
+                openEnvelopeInsideDrawer(envelopeId);
+            }
+        }
+
+        function openCubbyFromSentLog(cubbyId, envelopeId) {
             openCubbyDrawer(cubbyId);
             if (envelopeId && envelopes.some(e => e.id === envelopeId)) {
                 openEnvelopeInsideDrawer(envelopeId);
@@ -2182,8 +2447,8 @@
                 return;
             }
 
-            const relevant = getRelevantNotifications();
-            const unreadCount = isAsdos() ? relevant.length : relevant.filter(n => !n.read).length;
+            const personal = getPersonalNotifications();
+            const unreadCount = personal.filter(n => !n.read).length;
 
             if (unreadCount > 0) {
                 badgeEl.textContent = unreadCount;
@@ -2193,13 +2458,11 @@
             }
 
             if (titleEl) {
-                titleEl.textContent = isAsdos()
-                    ? `Riwayat Notifikasi Terkirim (${relevant.length})`
-                    : `Notifikasi Kuis Kamu (${unreadCount} baru)`;
+                titleEl.textContent = `Notifikasi Kuis Kamu (${unreadCount} baru)`;
             }
 
             if (markAllBtn) {
-                markAllBtn.classList.toggle('hidden', isAsdos() || unreadCount === 0);
+                markAllBtn.classList.toggle('hidden', unreadCount === 0);
             }
 
             if (!notifPanelOpen) {
@@ -2208,44 +2471,19 @@
             }
 
             panel.classList.remove('hidden');
-            if (relevant.length === 0) {
+            if (personal.length === 0) {
                 listEl.innerHTML = `
                     <div class="bg-white border-2 border-dashed border-slate-400 rounded-2xl p-4 text-center text-xs font-medium text-slate-500">
-                        ${isAsdos()
-                            ? 'Belum ada notifikasi yang kamu kirimkan ke mahasiswa.'
-                            : 'Belum ada notifikasi kuis baru untuk NPM kamu.'}
+                        Belum ada notifikasi kuis baru untuk NPM kamu (${escapeHtml(currentUser.npm)}).
                     </div>
                 `;
                 return;
             }
 
-            listEl.innerHTML = relevant.slice(0, 12).map(n => {
+            listEl.innerHTML = personal.slice(0, 12).map(n => {
                 const channelsHtml = (n.channels || ['Inbox Web']).map(ch =>
                     `<span class="px-1.5 py-0.5 bg-blue-50 border border-slate-900 rounded-md text-[10px] font-bold text-[#1D4ED8]">${escapeHtml(ch)}</span>`
                 ).join('');
-
-                if (isAsdos()) {
-                    return `
-                        <div class="bg-white border-2 border-slate-900 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-[0_3px_0_#0F172A]">
-                            <div class="min-w-0">
-                                <div class="flex flex-wrap items-center gap-1.5 mb-0.5">
-                                    <span class="px-2 py-0.5 bg-[#DBEAFE] text-[#1D4ED8] border border-slate-900 rounded-full text-[10px] font-logo font-bold">Loker ${escapeHtml(n.cubby)}</span>
-                                    <span class="text-xs font-extrabold text-slate-900">${escapeHtml(n.recipientName)}</span>
-                                    <span class="text-[10px] font-mono text-slate-500">(${escapeHtml(n.recipientNpm)})</span>
-                                </div>
-                                <p class="text-xs font-semibold text-slate-700">${escapeHtml(n.course)} ${escapeHtml(n.className || '')} &bull; ${escapeHtml(n.quizTitle)}</p>
-                                <div class="flex flex-wrap items-center gap-1.5 mt-1">
-                                    ${channelsHtml}
-                                    <span class="text-[10px] font-mono text-slate-500">${escapeHtml(n.dateAdded)}</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="openCubbyFromNotification('${n.id}', '${n.cubby}', '${n.envelopeId || ''}')"
-                                class="tactile-btn px-3 py-1 bg-white hover:bg-blue-50 text-slate-900 text-[11px] font-extrabold shrink-0 cursor-pointer">
-                                Lihat Loker ${escapeHtml(n.cubby)} &rarr;
-                            </button>
-                        </div>
-                    `;
-                }
 
                 return `
                     <div class="bg-white border-2 ${n.read ? 'border-slate-400 opacity-75' : 'border-slate-900 shadow-[0_3px_0_#0F172A]'} rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
@@ -2278,6 +2516,386 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        // =====================================================================
+        // TA WORKSPACE TABS: LEMARI RAK | RIWAYAT KIRIM | SINKRON SCELE
+        // =====================================================================
+        function switchMainTab(tab) {
+            if (!isAsdos() && tab !== 'rack') {
+                activeMainTab = 'rack';
+            } else {
+                activeMainTab = tab;
+            }
+            renderTaTabs();
+            if (activeMainTab === 'sent') {
+                renderTaSentLog();
+            } else if (activeMainTab === 'scele') {
+                renderSceleView();
+                if (sceleConnected && sceleCourses.length === 0) {
+                    loadSceleCourses();
+                }
+            }
+        }
+
+        function openSceleTabFromInputModal() {
+            closeInputModal();
+            switchMainTab('scele');
+        }
+
+        function renderTaTabs() {
+            const tabNav = document.getElementById('ta-workspace-tabs');
+            const rackView = document.getElementById('rack-view-container');
+            const sentView = document.getElementById('ta-sent-view');
+            const sceleView = document.getElementById('ta-scele-view');
+            const tabRack = document.getElementById('ta-tab-rack');
+            const tabSent = document.getElementById('ta-tab-sent');
+            const tabScele = document.getElementById('ta-tab-scele');
+            const sentBadge = document.getElementById('ta-sent-badge');
+            const scelePill = document.getElementById('ta-scele-status-pill');
+            if (!tabNav || !rackView || !sentView || !sceleView) return;
+
+            if (!isAsdos()) {
+                tabNav.classList.add('hidden');
+                tabNav.classList.remove('flex');
+                rackView.classList.remove('hidden');
+                sentView.classList.add('hidden');
+                sceleView.classList.add('hidden');
+                return;
+            }
+
+            tabNav.classList.remove('hidden');
+            tabNav.classList.add('flex');
+
+            if (sentBadge) sentBadge.textContent = sentNotifications.length;
+            if (scelePill) {
+                scelePill.textContent = sceleConnected ? 'Terhubung' : 'Offline';
+                scelePill.className = sceleConnected
+                    ? 'px-2 py-0.5 bg-[#D1FAE5] text-[#065F46] border border-slate-900 rounded-full text-[10px] font-mono font-bold'
+                    : 'px-2 py-0.5 bg-slate-200 text-slate-700 border border-slate-900 rounded-full text-[10px] font-mono font-bold';
+            }
+
+            const activeBlue = 'tactile-btn inline-flex items-center gap-1.5 px-4 py-2 bg-[#1D4ED8] text-white text-xs sm:text-sm font-extrabold cursor-pointer';
+            const inactiveWhite = 'tactile-btn inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-blue-50 text-slate-900 text-xs sm:text-sm font-extrabold cursor-pointer';
+            const activeMint = 'tactile-btn inline-flex items-center gap-1.5 px-4 py-2 bg-[#10B981] text-white text-xs sm:text-sm font-extrabold cursor-pointer';
+
+            if (tabRack) tabRack.className = activeMainTab === 'rack' ? activeBlue : inactiveWhite;
+            if (tabSent) tabSent.className = activeMainTab === 'sent' ? activeBlue : inactiveWhite;
+            if (tabScele) tabScele.className = activeMainTab === 'scele' ? activeMint : inactiveWhite;
+
+            rackView.classList.toggle('hidden', activeMainTab !== 'rack');
+            sentView.classList.toggle('hidden', activeMainTab !== 'sent');
+            sceleView.classList.toggle('hidden', activeMainTab !== 'scele');
+        }
+
+        function renderTaSentLog() {
+            const listEl = document.getElementById('ta-sent-list');
+            const titleEl = document.getElementById('ta-sent-title');
+            if (!listEl || !isAsdos()) return;
+
+            const q = (document.getElementById('ta-sent-filter')?.value || '').trim().toLowerCase();
+            const filtered = sentNotifications.filter(n =>
+                !q ||
+                (n.recipientName || '').toLowerCase().includes(q) ||
+                (n.recipientNpm || '').includes(q) ||
+                (n.course || '').toLowerCase().includes(q) ||
+                (n.quizTitle || '').toLowerCase().includes(q) ||
+                (n.cubby || '').toLowerCase().includes(q)
+            );
+
+            if (titleEl) {
+                titleEl.textContent = `Riwayat Notifikasi Terkirim (${filtered.length})`;
+            }
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `
+                    <div class="bg-slate-50 border-2 border-dashed border-slate-400 rounded-2xl p-5 text-center text-xs font-medium text-slate-500">
+                        ${sentNotifications.length === 0
+                            ? 'Belum ada notifikasi yang kamu kirimkan ke mahasiswa.'
+                            : `Tidak ada riwayat yang cocok dengan "${escapeHtml(q)}".`}
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(n => {
+                const channelsHtml = (n.channels || ['Inbox Web']).map(ch =>
+                    `<span class="px-1.5 py-0.5 bg-blue-50 border border-slate-900 rounded-md text-[10px] font-bold text-[#1D4ED8]">${escapeHtml(ch)}</span>`
+                ).join('');
+
+                return `
+                    <div class="bg-white border-2 border-slate-900 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-[0_3px_0_#0F172A]">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-1.5 mb-0.5">
+                                <span class="px-2 py-0.5 bg-[#DBEAFE] text-[#1D4ED8] border border-slate-900 rounded-full text-[10px] font-logo font-bold">Loker ${escapeHtml(n.cubby)}</span>
+                                <span class="text-xs font-extrabold text-slate-900">${escapeHtml(n.recipientName)}</span>
+                                <span class="text-[10px] font-mono text-slate-500">(${escapeHtml(n.recipientNpm)})</span>
+                                <span class="px-2 py-0.5 text-[10px] font-extrabold rounded-full border ${
+                                    n.read
+                                        ? 'bg-[#D1FAE5] text-[#065F46] border-slate-900'
+                                        : 'bg-amber-100 text-amber-900 border-slate-900'
+                                }">${n.read ? 'Sudah Dibaca / Diambil' : 'Terkirim'}</span>
+                            </div>
+                            <p class="text-xs font-semibold text-slate-700">${escapeHtml(n.course)} ${escapeHtml(n.className || '')} &bull; ${escapeHtml(n.quizTitle)}</p>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                                ${channelsHtml}
+                                <span class="text-[10px] font-mono text-slate-500">${escapeHtml(n.dateAdded)}</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="openCubbyFromSentLog('${n.cubby}', '${n.envelopeId || ''}')"
+                            class="tactile-btn px-3 py-1.5 bg-white hover:bg-blue-50 text-slate-900 text-[11px] font-extrabold shrink-0 cursor-pointer">
+                            Lihat Loker ${escapeHtml(n.cubby)} &rarr;
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // =====================================================================
+        // SCELE INTEGRATION & CSV ROSTER SYNC (TA ONLY)
+        // =====================================================================
+        function toggleSceleAuthMode() {
+            const useToken = Boolean(document.getElementById('scele-use-token')?.checked);
+            document.getElementById('scele-cred-user-wrap')?.classList.toggle('hidden', useToken);
+            document.getElementById('scele-cred-pass-wrap')?.classList.toggle('hidden', useToken);
+            document.getElementById('scele-token-wrap')?.classList.toggle('hidden', !useToken);
+        }
+
+        function renderSceleView() {
+            const connectForm = document.getElementById('scele-connect-form');
+            const connectedControls = document.getElementById('scele-connected-controls');
+            const connectedUserEl = document.getElementById('scele-connected-user');
+            const coursesArea = document.getElementById('scele-courses-area');
+            if (!connectForm || !connectedControls || !coursesArea) return;
+
+            if (sceleConnected && sceleUser) {
+                connectForm.classList.add('hidden');
+                connectedControls.classList.remove('hidden');
+                connectedControls.classList.add('flex');
+                if (connectedUserEl) {
+                    connectedUserEl.textContent = `${sceleUser.fullname} (${sceleUser.username})`;
+                }
+                coursesArea.classList.remove('hidden');
+                renderSceleCourseList();
+            } else {
+                connectForm.classList.remove('hidden');
+                connectedControls.classList.add('hidden');
+                connectedControls.classList.remove('flex');
+                coursesArea.classList.add('hidden');
+                document.getElementById('scele-import-box')?.classList.add('hidden');
+            }
+        }
+
+        async function handleSceleConnect(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btn-scele-connect');
+            const useToken = Boolean(document.getElementById('scele-use-token')?.checked);
+            const baseUrl = document.getElementById('scele-base-url').value.trim();
+
+            const payload = { baseUrl };
+            if (useToken) {
+                payload.token = document.getElementById('scele-token').value.trim();
+            } else {
+                payload.username = document.getElementById('scele-username').value.trim();
+                payload.password = document.getElementById('scele-password').value;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Menghubungkan...';
+            }
+            try {
+                const res = await apiRequest('/api/scele/connect', payload);
+                applyServerState(res.state);
+                sceleCourses = Array.isArray(res.courses) ? res.courses : [];
+                scelePreview = null;
+                document.getElementById('scele-password').value = '';
+                document.getElementById('scele-token').value = '';
+                renderAll();
+                showToast('Terhubung ke SCELE', `Berhasil masuk sebagai ${res.sceleUser.fullname} (${sceleCourses.length} mata kuliah ditemukan).`);
+            } catch (err) {
+                showToast('Gagal Terhubung ke SCELE', err.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = 'Hubungkan ke SCELE';
+                }
+            }
+        }
+
+        async function handleSceleDisconnect() {
+            try {
+                const res = await apiRequest('/api/scele/disconnect', {});
+                applyServerState(res.state);
+                sceleCourses = [];
+                scelePreview = null;
+                renderAll();
+                showToast('Koneksi SCELE Diputus', 'Token sesi SCELE telah dihapus.');
+            } catch (err) {
+                showToast('Gagal Memutus SCELE', err.message);
+            }
+        }
+
+        async function loadSceleCourses() {
+            try {
+                const res = await apiRequest('/api/scele/courses', null, 'GET');
+                sceleCourses = Array.isArray(res.courses) ? res.courses : [];
+                renderSceleCourseList();
+            } catch (err) {
+                showToast('Gagal Memuat Course SCELE', err.message);
+            }
+        }
+
+        function renderSceleCourseList() {
+            const listEl = document.getElementById('scele-courses-list');
+            const countEl = document.getElementById('scele-course-count');
+            if (!listEl) return;
+            if (countEl) countEl.textContent = sceleCourses.length;
+
+            if (sceleCourses.length === 0) {
+                listEl.innerHTML = `<div class="sm:col-span-2 bg-slate-50 border-2 border-dashed border-slate-400 rounded-2xl p-4 text-center text-xs text-slate-500">Tidak ada mata kuliah aktif ditemukan di akun SCELE ini.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = sceleCourses.map(course => `
+                <div class="bg-white border-2 border-slate-900 rounded-2xl p-3 flex items-center justify-between gap-2.5 shadow-[0_3px_0_#0F172A]">
+                    <div class="min-w-0">
+                        <span class="inline-block px-2 py-0.5 bg-[#DBEAFE] text-[#1D4ED8] border border-slate-900 rounded-full text-[10px] font-mono font-bold mb-1">
+                            ${escapeHtml(course.shortname || `ID ${course.id}`)}
+                        </span>
+                        <p class="text-xs font-extrabold text-slate-900 truncate">${escapeHtml(course.fullname)}</p>
+                        <p class="text-[11px] font-mono text-slate-500">${course.enrolledusercount ? `${course.enrolledusercount} peserta terdaftar` : `Course ID: ${course.id}`}</p>
+                    </div>
+                    <button type="button" onclick="previewSceleCourse(${course.id})"
+                        class="tactile-btn px-3 py-1.5 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white text-[11px] font-extrabold shrink-0 cursor-pointer">
+                        Muat Mahasiswa
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function previewSceleCourse(courseId) {
+            const course = sceleCourses.find(c => c.id === courseId);
+            if (!course) return;
+            try {
+                const res = await apiRequest(`/api/scele/courses/${courseId}/students?only_students=1`, null, 'GET');
+                scelePreview = {
+                    course,
+                    students: Array.isArray(res.students) ? res.students : [],
+                    groups: Array.isArray(res.groups) ? res.groups : []
+                };
+
+                document.getElementById('scele-preview-title').textContent = course.fullname;
+                document.getElementById('scele-import-course').value = course.suggestedCourse || course.shortname || course.fullname;
+                document.getElementById('scele-import-class').value = course.suggestedClassName || 'SCELE';
+
+                const groupSelect = document.getElementById('scele-import-group');
+                const groupOpts = [`<option value="">Semua Peserta (${scelePreview.students.length} mhs)</option>`];
+                scelePreview.groups.forEach(g => {
+                    const cnt = scelePreview.students.filter(s => (s.groups || []).includes(g)).length;
+                    groupOpts.push(`<option value="${escapeHtml(g)}">${escapeHtml(g)} (${cnt} mhs)</option>`);
+                });
+                groupSelect.innerHTML = groupOpts.join('');
+
+                document.getElementById('scele-import-box').classList.remove('hidden');
+                updateSceleGroupPreview();
+            } catch (err) {
+                showToast('Gagal Memuat Peserta', err.message);
+            }
+        }
+
+        function updateSceleGroupPreview() {
+            if (!scelePreview) return;
+            const selectedGroup = document.getElementById('scele-import-group').value;
+            const filtered = selectedGroup
+                ? scelePreview.students.filter(s => (s.groups || []).includes(selectedGroup))
+                : scelePreview.students;
+
+            if (selectedGroup) {
+                document.getElementById('scele-import-class').value = selectedGroup;
+            }
+            document.getElementById('scele-preview-subtitle').textContent =
+                `${filtered.length} mahasiswa siap diimpor ke dropdown Kelas Diampu`;
+            document.getElementById('scele-preview-count-badge').textContent = `${filtered.length} mhs`;
+
+            const listEl = document.getElementById('scele-preview-students');
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<p class="text-slate-500 text-center py-2">Tidak ada mahasiswa di filter grup ini.</p>`;
+                return;
+            }
+            listEl.innerHTML = filtered.slice(0, 60).map(s => `
+                <div class="flex items-center justify-between gap-2 px-2 py-1 rounded-lg bg-slate-50 border border-slate-200">
+                    <span class="font-bold text-slate-900 truncate">${escapeHtml(s.name)}</span>
+                    <span class="font-mono text-[11px] text-slate-600 shrink-0">${escapeHtml(s.npm)}</span>
+                </div>
+            `).join('') + (filtered.length > 60 ? `<p class="text-[11px] text-center text-slate-500 pt-1">+${filtered.length - 60} mahasiswa lainnya</p>` : '');
+        }
+
+        async function handleSceleImport(event) {
+            event.preventDefault();
+            if (!scelePreview) return;
+
+            const courseName = document.getElementById('scele-import-course').value.trim();
+            const className = document.getElementById('scele-import-class').value.trim();
+            const groupName = document.getElementById('scele-import-group').value;
+            const btn = document.getElementById('btn-scele-import');
+
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Mengimpor...';
+            }
+            try {
+                const res = await apiRequest('/api/scele/import', {
+                    courseId: scelePreview.course.id,
+                    courseName,
+                    className,
+                    groupName,
+                    onlyStudents: true
+                });
+                applyServerState(res.state);
+                updateAuthUI();
+                renderAll();
+                showToast('Roster SCELE Diimpor', `${res.roster.label} (${res.importedCount} mahasiswa) kini tersedia di dropdown Taruh Berkas.`);
+            } catch (err) {
+                showToast('Gagal Impor SCELE', err.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = 'Impor ke Dropdown Kelas Asdos';
+                }
+            }
+        }
+
+        function handleCsvFileSelect(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                document.getElementById('csv-text-input').value = String(reader.result || '');
+            };
+            reader.readAsText(file);
+        }
+
+        async function handleCsvImport(event) {
+            event.preventDefault();
+            const courseName = document.getElementById('csv-course-name').value.trim();
+            const className = document.getElementById('csv-class-name').value.trim();
+            const csvText = document.getElementById('csv-text-input').value.trim();
+
+            try {
+                const res = await apiRequest('/api/scele/import-csv', {
+                    courseName,
+                    className,
+                    csvText
+                });
+                applyServerState(res.state);
+                document.getElementById('csv-import-form').reset();
+                updateAuthUI();
+                renderAll();
+                showToast('Roster CSV Diimpor', `${res.roster.label} (${res.importedCount} mahasiswa) ditambahkan ke dropdown Kelas Diampu.`);
+            } catch (err) {
+                showToast('Gagal Impor CSV', err.message);
+            }
         }
 
         // =====================================================================

@@ -18,6 +18,16 @@ from models import (
     suggest_emptiest_cubby,
 )
 from notifications import NotificationService
+from scele import (
+    DEFAULT_SCELE_BASE_URL,
+    SceleError,
+    get_course_students,
+    get_site_info,
+    get_user_courses,
+    mint_token,
+    normalize_base_url,
+    slugify_class_id,
+)
 from storage import RackStore
 
 app = Flask(__name__)
@@ -30,7 +40,11 @@ notifier = NotificationService(store)
 def build_state_payload(user: dict | None) -> dict:
     """Assemble full frontend state JSON for the active session user."""
     if user and user.get("role") == "asdos":
-        class_rosters = store.get_class_rosters(user.get("assignedClasses"))
+        assigned = list(user.get("assignedClasses") or [])
+        for cid, roster in store.class_rosters.items():
+            if roster.get("source") in {"scele", "csv"} and cid not in assigned:
+                assigned.append(cid)
+        class_rosters = store.get_class_rosters(assigned)
     else:
         class_rosters = {}
 
@@ -38,12 +52,25 @@ def build_state_payload(user: dict | None) -> dict:
         "user": user,
         "envelopes": store.envelopes,
         "quizzes": store.quizzes,
-        "notifications": store.get_notifications_for_user(user),
+        "notifications": store.get_personal_notifications_for_user(user),
+        "sentNotifications": store.get_sent_notifications_for_user(user),
         "classRosters": class_rosters,
         "suggestedCubby": suggest_emptiest_cubby(store.envelopes, store.quizzes),
         "stats": compute_stats(store.envelopes, store.quizzes),
         "realSsoEnabled": is_real_sso_enabled(),
+        "sceleConnected": bool(session.get("scele_token")),
+        "sceleUser": session.get("scele_user"),
+        "sceleBaseUrl": session.get("scele_base_url", DEFAULT_SCELE_BASE_URL),
     }
+
+
+def _assign_class_to_session_ta(user: dict, class_id: str) -> None:
+    assigned = list(user.get("assignedClasses") or [])
+    if class_id not in assigned:
+        assigned.append(class_id)
+        user["assignedClasses"] = assigned
+        session["user"] = user
+        session.modified = True
 
 
 def _require_user() -> tuple[dict | None, tuple | None]:
@@ -138,8 +165,11 @@ def api_auth_login():
 
 @app.post("/api/auth/logout")
 def api_auth_logout():
-    """Clear current user session."""
+    """Clear current user and SCELE session."""
     session.pop("user", None)
+    session.pop("scele_token", None)
+    session.pop("scele_user", None)
+    session.pop("scele_base_url", None)
     return jsonify(build_state_payload(None))
 
 
@@ -160,7 +190,7 @@ def api_create_envelope():
     channels = data.get("channels") or ["Inbox Web"]
 
     if cubby not in get_all_cubby_ids():
-        return jsonify({"error": f"Loker '{cubby}' tidak valid (pilih A1-C5)."}), 400
+        return jsonify({"error": f"Loker '{cubby}' tidak valid (pilih A1-E3)."}), 400
     if not quiz_name:
         return jsonify({"error": "Nama kuis / penilaian wajib diisi."}), 400
 
@@ -225,7 +255,7 @@ def api_create_loose():
     channels = data.get("channels") or ["Inbox Web", "Email @ui.ac.id"]
 
     if cubby not in get_all_cubby_ids():
-        return jsonify({"error": f"Loker '{cubby}' tidak valid (pilih A1-C5)."}), 400
+        return jsonify({"error": f"Loker '{cubby}' tidak valid (pilih A1-E3)."}), 400
     if not quiz_title:
         return jsonify({"error": "Judul kuis wajib diisi."}), 400
 
@@ -309,6 +339,200 @@ def api_reset():
     """Reset the JSON store back to initial demo seed data."""
     store.reset()
     return jsonify({"state": build_state_payload(session.get("user"))})
+
+
+# ---------------------------------------------------------------------------
+# SCELE (Moodle Web Services) & CSV Roster Sync Routes (TA Only)
+# ---------------------------------------------------------------------------
+@app.post("/api/scele/connect")
+def api_scele_connect():
+    """Connect TA session to SCELE via username/password or an existing wstoken."""
+    user, err = _require_asdos()
+    if err:
+        return err
+
+    data = request.get_json(silent=True) or {}
+    raw_token = str(data.get("token", "")).strip()
+    username = str(data.get("username", "")).strip()
+    password = str(data.get("password", ""))
+    base_url = str(data.get("baseUrl", "")).strip() or DEFAULT_SCELE_BASE_URL
+
+    try:
+        normalized_url = normalize_base_url(base_url)
+        token = raw_token or mint_token(username, password, base_url=normalized_url)
+        scele_user = get_site_info(token, base_url=normalized_url)
+        courses = get_user_courses(token, scele_user["userid"], base_url=normalized_url)
+    except SceleError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    # Keep only the session token, never persist the user's password
+    session["scele_token"] = token
+    session["scele_user"] = scele_user
+    session["scele_base_url"] = normalized_url
+
+    return jsonify(
+        {
+            "sceleUser": scele_user,
+            "courses": courses,
+            "state": build_state_payload(user),
+        }
+    )
+
+
+@app.get("/api/scele/courses")
+def api_scele_courses():
+    """Fetch courses for the currently connected SCELE session."""
+    _, err = _require_asdos()
+    if err:
+        return err
+
+    token = session.get("scele_token")
+    scele_user = session.get("scele_user") or {}
+    base_url = session.get("scele_base_url", DEFAULT_SCELE_BASE_URL)
+    if not token or not scele_user.get("userid"):
+        return jsonify({"error": "Belum terhubung ke SCELE. Silakan login SCELE terlebih dahulu."}), 400
+
+    try:
+        courses = get_user_courses(token, int(scele_user["userid"]), base_url=base_url)
+    except SceleError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    return jsonify({"sceleUser": scele_user, "courses": courses})
+
+
+@app.get("/api/scele/courses/<int:course_id>/students")
+def api_scele_course_students(course_id: int):
+    """Preview enrolled students and Moodle groups for a SCELE course."""
+    _, err = _require_asdos()
+    if err:
+        return err
+
+    token = session.get("scele_token")
+    base_url = session.get("scele_base_url", DEFAULT_SCELE_BASE_URL)
+    if not token:
+        return jsonify({"error": "Belum terhubung ke SCELE. Silakan login SCELE terlebih dahulu."}), 400
+
+    only_students = request.args.get("only_students", "1") != "0"
+    try:
+        students, groups = get_course_students(
+            token,
+            course_id,
+            base_url=base_url,
+            only_students=only_students,
+        )
+    except SceleError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    return jsonify({"courseId": course_id, "students": students, "groups": groups})
+
+
+@app.post("/api/scele/import")
+def api_scele_import():
+    """Import a SCELE course (or selected Moodle group) into RackStore class rosters."""
+    user, err = _require_asdos()
+    if err:
+        return err
+
+    token = session.get("scele_token")
+    base_url = session.get("scele_base_url", DEFAULT_SCELE_BASE_URL)
+    if not token:
+        return jsonify({"error": "Belum terhubung ke SCELE. Silakan login SCELE terlebih dahulu."}), 400
+
+    data = request.get_json(silent=True) or {}
+    try:
+        course_id = int(data.get("courseId"))
+    except (TypeError, ValueError):
+        return jsonify({"error": "courseId SCELE tidak valid."}), 400
+
+    course_name = str(data.get("courseName", "")).strip()
+    class_name = str(data.get("className", "")).strip() or "SCELE"
+    group_name = str(data.get("groupName", "")).strip()
+    only_students = bool(data.get("onlyStudents", True))
+
+    if not course_name:
+        return jsonify({"error": "Nama mata kuliah wajib diisi."}), 400
+
+    try:
+        students, _ = get_course_students(
+            token,
+            course_id,
+            base_url=base_url,
+            only_students=only_students,
+        )
+    except SceleError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    if group_name:
+        students = [s for s in students if group_name in (s.get("groups") or [])]
+
+    suffix = f"{course_id}-{group_name}" if group_name else str(course_id)
+    class_id = slugify_class_id("scele", suffix)
+
+    try:
+        roster = store.upsert_class_roster(
+            class_id=class_id,
+            course=course_name,
+            class_name=class_name,
+            students=students,
+            source="scele",
+        )
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    _assign_class_to_session_ta(user, class_id)
+    return jsonify(
+        {
+            "roster": roster,
+            "importedCount": len(roster["students"]),
+            "state": build_state_payload(user),
+        }
+    ), 201
+
+
+@app.post("/api/scele/import-csv")
+def api_scele_import_csv():
+    """Import a roster from an exported SCELE/EMAS CSV file or pasted CSV text."""
+    user, err = _require_asdos()
+    if err:
+        return err
+
+    data = request.get_json(silent=True) or {}
+    csv_text = str(data.get("csvText", "")).strip()
+    course_name = str(data.get("courseName", "")).strip()
+    class_name = str(data.get("className", "")).strip() or "Umum"
+
+    if not course_name:
+        return jsonify({"error": "Nama mata kuliah wajib diisi."}), 400
+    if not csv_text:
+        return jsonify({"error": "Isi CSV roster tidak boleh kosong."}), 400
+
+    class_id = slugify_class_id("csv", f"{course_name}-{class_name}")
+    try:
+        roster = store.import_roster_from_csv(csv_text, class_id, course_name, class_name)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    _assign_class_to_session_ta(user, class_id)
+    return jsonify(
+        {
+            "roster": roster,
+            "importedCount": len(roster["students"]),
+            "state": build_state_payload(user),
+        }
+    ), 201
+
+
+@app.post("/api/scele/disconnect")
+def api_scele_disconnect():
+    """Clear the active SCELE token from the TA's Flask session."""
+    user, err = _require_asdos()
+    if err:
+        return err
+
+    session.pop("scele_token", None)
+    session.pop("scele_user", None)
+    session.pop("scele_base_url", None)
+    return jsonify({"state": build_state_payload(user)})
 
 
 if __name__ == "__main__":

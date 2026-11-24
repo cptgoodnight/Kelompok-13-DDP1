@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-COLUMNS = ["A", "B", "C"]
-ROWS = [1, 2, 3, 4, 5]
+ROWS = ["A", "B", "C", "D", "E"]
+COLUMNS = [1, 2, 3]
 
 
 def get_all_cubby_ids() -> list[str]:
-    """Return ordered compartment IDs for the 3x5 rack (A1-C5, row-major)."""
-    return [f"{col}{row}" for row in ROWS for col in COLUMNS]
+    """Return ordered compartment IDs for the 5x3 rack (A1-E3, rows A-E, cols 1-3)."""
+    return [f"{row}{col}" for row in ROWS for col in COLUMNS]
 
 
 @dataclass

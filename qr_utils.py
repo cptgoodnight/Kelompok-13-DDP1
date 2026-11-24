@@ -16,7 +16,7 @@ def generate_all_qr_codes(
     base_url: str = "http://127.0.0.1:5000",
     output_dir: str | Path = "qr_codes",
 ) -> list[Path]:
-    """Generate PNG QR stickers for compartments A1-C5 using the optional qrcode package."""
+    """Generate PNG QR stickers for compartments A1-E3 using the optional qrcode package."""
     try:
         import qrcode
     except ImportError as exc:
