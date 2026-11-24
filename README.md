@@ -11,10 +11,12 @@ Sistem pelacak berkas & kertas kuis fisik Sekretariat Fasilkom UI berbasis **Pyt
 
 ## Cara Menjalankan (Windows PowerShell)
 
-1. Masuk ke folder proyek:
+1. Clone repositori dan masuk ke folder hasil clone:
    ```powershell
-   cd C:\Users\62812\OneDrive\Documents\UI\ddp1\proyek
+   git clone https://github.com/cptgoodnight/Kelompok-13-DDP1.git
+   cd Kelompok-13-DDP1
    ```
+   *(Atau `cd` ke lokasi folder tempat kamu menyimpan repo ini.)*
 
 2. Buat virtual environment dan pasang dependensi (cukup sekali saat setup awal):
    ```powershell
@@ -23,11 +25,11 @@ Sistem pelacak berkas & kertas kuis fisik Sekretariat Fasilkom UI berbasis **Pyt
    ```
    > Jika `python` mengarah ke alias Microsoft Store, gunakan path Python langsung (misal `C:\Users\<user>\AppData\Local\Python\pythoncore-3.14-64\python.exe -m venv .venv`).
 
-3. Jalankan server Flask dari folder proyek:
+3. Jalankan server Flask dari folder root repositori:
    ```powershell
    .\.venv\Scripts\python.exe app.py
    ```
-   > **Catatan PowerShell:** Selalu jalankan dari folder root proyek (`proyek`, bukan dari dalam `.venv\Scripts`) dan sertakan awalan `.\` agar PowerShell memakai Python di dalam `.venv`, bukan alias `python` dari Microsoft Store.
+   > **Catatan PowerShell:** Selalu jalankan dari folder root repo (tempat `app.py` berada, bukan dari dalam `.venv\Scripts`) dan sertakan awalan `.\` agar PowerShell memakai Python di dalam `.venv`, bukan alias `python` dari Microsoft Store.
 
 4. Buka di browser:
    - Halaman utama: `http://127.0.0.1:5000`
